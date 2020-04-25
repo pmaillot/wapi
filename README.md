@@ -6,9 +6,10 @@ This represents more than 24000 parameters!
 
 The API uses UDP and TCP networking to establish a connection to the WING console. Typical communication take place over TCP/IP on port 2222.
 
-Parameters are Nodes, int, float or string
+Parameters can be nodes, int, float or string
 
 Get functions can be attended, timed, or unattended (such as in even loops)
+Set functions are... set :)
 
 Node management will be part of a later release.
 
