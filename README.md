@@ -36,8 +36,9 @@ WING tokens are listed in an include file: wapi.h that must be included in your 
 
 All function calls are regrouped in a binary library: wapi.lib, that you must include at link time. 
 A typical compilation of a source file wtest.c in a Windows environment can be as follows:
-gcc -O3 -Wall -c -fmessage-length=0 -o wtest.o "wtest.c" 
-gcc "-LC:<path to wapi.lib>" -o wtest.exe wtest.o -lwapi -lws2_32
+
+    gcc -O3 -Wall -c -fmessage-length=0 -o wtest.o "wtest.c" 
+    gcc "-LC:<path to wapi.lib>" -o wtest.exe wtest.o -lwapi -lws2_32
 
 Don’t forget to set the correct path to the wapi.lib file in the above compilation/link likes!
 
