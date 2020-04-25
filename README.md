@@ -149,13 +149,19 @@ If data is available from WING and the data token is not the expected one, the f
 # A Small Program Example
 Let’s program! Assume you need to programmatically change the name of channels and mute/unmute the respective channels from data contained in a file. Let’s consider the file also contains initial channel faders, and covers channels 1 to 4. The file can be a text file such as:
 
+...
+
 Steve  0  -144.0
 Jimmy  1  -30.0
 Carla  1  -22.0
 Jannet 0  -100.0
 
+...
+
 This is C source code; easy to understand and translate if needed to other programming languages.
 We show on the right of the page the resulting channel strips 1-4:
+
+...
 
 #include <stdio.h>
 #include <string.h>
@@ -194,6 +200,7 @@ int main() {
     exit(0);
 }	 
 
+...
  
 # Unsolicited updates
 There are times and situations when WING will send data to your program. This has been explained above: As soon as you are connected to WING and have exchanged data with it, the connection will stay in an open state for 10s, unless to specifically establish and close the TCP connection around your work. While this will help, it will not prevent WING to send you data while the TCP link is active, and is certainly not an effective way to manage data as you will send more resources in opening/closing the connection than in time sending or receiving data.
@@ -211,6 +218,8 @@ The wGetVoidPTokenTimed() API call is a specific Get function. Unlike other Get 
 When data is available in the event queue, the oldest even is retrieved, and its token is returned in the token variable. The data associated to the token is also returned to the calling application using the vpt variable. The function returns WSUCCESS if data has been returned to the calling program, WZERO if no suitable format conversion was found or a timeout occurred. It can also return WRECV_ERROR on TCP read errors. Attempting to get a value from a token of type NODE will return WNODE.
 
 In a typical, simple example of use of the two API calls shown in the following paragraph, the main loop is replaced with a while(1){} statement.
+
+...
 
     …
 
@@ -241,6 +250,7 @@ In a typical, simple example of use of the two API calls shown in the following 
     }
     …
 
+...
 
 
  
