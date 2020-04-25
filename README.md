@@ -226,7 +226,7 @@ In a typical, simple example of use of the two API calls shown in the following 
     #include "wapi.h"
     #include "wext.h"
 
-    
+        ...
         while (1) {
             union {
                 int       i;
@@ -248,7 +248,7 @@ In a typical, simple example of use of the two API calls shown in the following 
                 fflush(stdout);
             }
         }
-    
+        ...
 
 
 
