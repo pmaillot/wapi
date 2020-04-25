@@ -8,7 +8,7 @@ The API uses UDP and TCP networking to establish a connection to the WING consol
 
 Parameters can be nodes, int, float or string
 
-Get functions can be attended, timed, or unattended (such as in even loops)
+Get functions can be attended, timed, or unattended (such as in event loops)
 Set functions are... set :)
 
 Node management will be part of a later release.
