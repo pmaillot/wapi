@@ -1,4 +1,6 @@
 # wapi
+version 0.2
+
 A C language API for WING digital mixers
 
 This repo is a C code API to WING digital mixing consoles. Ver 0.1 (first release) is capable of get and set *all* WING parameters according to FW 1.06.
@@ -146,7 +148,17 @@ it will then treat the data as done in the wGetStringToken() function; The value
 If data is available from WING and the data token is not the expected one, the function discards data and inquires WING for new data. The above takes place as long as timeout is not reached.
 
 
- 
+
+# int wGetNode(wtoken node, char *str) 
+The wGetNode() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected.
+
+
+
+# int wGetNodeTimed(wtoken node, char *str, int timeout) 
+The wGetNodeTimed() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. Eact node recovery attempt will be procedded over a time of value timeout; passed this delay, the function will stop and return WZERO. Timeout applies to any and every of the parameters part of the node node.
+
+
+
 # A Small Program Example
 Let’s program! Assume you need to programmatically change the name of channels and mute/unmute the respective channels from data contained in a file. Let’s consider the file also contains initial channel faders, and covers channels 1 to 4. The file can be a text file such as:
 
