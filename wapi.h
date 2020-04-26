@@ -5,24 +5,29 @@
  *      Author: Patrick-Gilles Maillot
  */
 
+
+
 #ifndef WAPI_H_
 #define WAPI_H_
 
 #define wKeepAlive_TIMEOUT	7
 
 typedef enum type {
+	UNKN = -1,
 	NODE,
 	I32,
 	F32,
 	S32
 } type;
 
+
 typedef enum {
-	WSEND_NTW_ERROR		=-6,
-	WSEND_UDP_ERROR		=-5,
-	WSEND_TCP_ERROR		=-4,
-	WSEND_ERROR			=-3,
-	WRECV_ERROR			=-2,
+	WSEND_NTW_ERROR		=-7,
+	WSEND_UDP_ERROR		=-6,
+	WSEND_TCP_ERROR		=-5,
+	WSEND_ERROR			=-4,
+	WRECV_ERROR			=-3,
+	WTOKEN				=-2,
 	WNODE				=-1,
 	WZERO				= 0,
 	WSUCCESS			= 1,
@@ -32,15 +37,6 @@ typedef enum {
 	$$UNKNOWN = 0,
 	$STAT,
 	$STAT_MODTYPE,
-	$STAT_A,
-	$STAT_A_STAT,
-	$STAT_A_DEV,
-	$STAT_B,
-	$STAT_B_STAT,
-	$STAT_B_DEV,
-	$STAT_C,
-	$STAT_C_STAT,
-	$STAT_C_DEV,
 	$STAT_LOCK,
 	$STAT_PPM,
 	$STAT_SOLO,
@@ -50,6 +46,15 @@ typedef enum {
 	$STAT_DATE,
 	$STAT_USBSTATE,
 	$STAT_USBVOLNAME,
+	$STAT_A,
+	$STAT_A_STAT,
+	$STAT_A_DEV,
+	$STAT_B,
+	$STAT_B_STAT,
+	$STAT_B_DEV,
+	$STAT_C,
+	$STAT_C_STAT,
+	$STAT_C_DEV,
 	CFG,
 	CFG_CLKRATE,
 	CFG_CLKSRC,
