@@ -1,5 +1,5 @@
 # wapi
-version 0.2
+version 0.3
 
 A C language API for WING digital mixers
 
@@ -67,6 +67,7 @@ wClose() ensures data is correctly disposed of when your program ends. It should
 # int wVer()
 wVer() returns the version of the wapi library file being used. The returned version is in the form ‘major.minor’, and its value is provided as 0x0000MMmm, with MM the major part of the version number and mm representing the minor part.
  
+
 # Setting Values
 
 # int wSetTokenFloat(wtoken token, float fval)
@@ -81,19 +82,19 @@ For example, sending value 444 to WING token CH_1_EQ_1F will be sent as a 32bit 
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting the value of ival, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to set a value on a token of type NODE will return WNODE.
 
 
-
 # int wSetTokenString(wtoken token, char* str)
 The wSetTokenString()  function takes as input a WING token token and a string str. It sends to WING the value of str after it has been adapted to the format expected by the WING token it is sent to. 
 For example, sending string “444” to WING token CH_1_EQ_1F will be sent as a 32bit float value of 444.0; WING will the adjust it to the nearest valid value of 444.533997. Sending that same string “444” to WING token CH_1_EQ_ON will result in a setting to 1, Finally, sending string “444” to WING token CH_1_NAME will change the channel name to 444.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting the string str, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to set a value on a token of type NODE will return WNODE.
-Getting Values
+
+
+# Getting Values
 
 # int wGetTokenFloat(wtoken token, float* fval)
 The wGetTokenFloat()  function interrogates WING token token to get its currently associated value. This value has a given type, which can for example be byte, 16bits integer, 32bits integer or float, empty string, 64 or 256 chars max string. The value retrieved from WING is adapted to float format as expected by the fval variable.
 For example, inquiring WING token CH_1_EQ_1F will return the current value of the token as a float value in fval. Inquiring WING token CH_1_EQ_ON will result in a value of 0.0 or 1.0, depending on the state of the token. 
 On the other hand, inquiring WING token CH_1_NAME will return a value of 0.0 and a status of WZERO.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting token value to fval, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to get a value from a token of type NODE will return WNODE.
-
 
 
 # int wGetTokenInt(wtoken token, int* ival)
@@ -109,10 +110,11 @@ For example, inquiring WING token CH_1_EQ_1F will return the current value of th
 As a last example, inquiring WING token CH_1_NAME will return the string currently used for naming channel 1.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting token value to str, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to get a value from a token of type NODE will return WNODE.
 
-The Get functions presented above are all “one shot read” functions so to speak; They request data from WING, expect the right data to be returned and upon a single TCP operation retrieving the currently available network record, they will return the buffer content, adapting it to the requested type of data. This is the most efficient way to gather information from the console, but come with a major caveat if someone is also manipulating (locally or remotely) the desk. Indeed, as other changes take place and assuming your communication channel is in an ‘open’ state (i.e. your last communication with WING is less than 10s old), the console will natively send you changes that are taking place, resulting of the local or remote changes operated onto the desk. 
-So, when a “one shot read” request arrives and is served, it is very likely to get data that does not correspond to the token that was part of the Get function, resulting in inconsistent data.
 
-Wapi therefore provides another set of Get functions for applications requiring a tighter control over the data they exchange with WING. In this new set of functions, the Get instance will gather information from WING over a given period of time and filter the possibly multiple  received tokens for one matching the specified token provided at call time. Only when the specified token is received or time has expired will the function process the data it received.
+The Get functions presented above are all “one shot read” functions so to speak; They request data from WING, expect the right data to be returned and upon a single TCP operation retrieving the currently available network record, they will return the buffer content, adapting it to the requested type of data. This is the most efficient way to gather information from the console, but comes with a major caveat if someone is also manipulating (locally or remotely) the desk. Indeed, as other changes take place and assuming your communication channel is in an ‘open’ state (i.e. your last communication with WING is less than 10s old), the console will natively send you changes that are taking place, resulting of the local or remote changes operated onto the desk. 
+So, when a “one shot read” request arrives and is served, it will sort through the received data for the expected token, and in doing this will discard the data received prior to finding the correct token.
+
+Wapi therefore provides another set of Get functions for applications requiring a timed control over the data they exchange with WING. In this new set of functions, the Get instance will as for the non-timed versions gather information from WING over a given period of time and filter the possibly multiple  received tokens for one matching the specified token provided at call time. Only when the specified token is received or time has expired will the function process the data it received.
 
 
 # int wGetFloatTokenTimed(wtoken tokenval, float *fval, int timeout)
@@ -224,6 +226,11 @@ API calls are therefore available to keep a connection between your application 
 wKeepAlive() maintains the connection between WING and the calling program so data issued by the console with no request initiated by the program can be received in a main loop, or over an extended period of time beyond 10s. 
 In fact, this function can be called as often as you like and will optionally performs a small exchange with the console, based on an internal timer. The elapsed time between two effective exchanges of data with the console depend on the value of wKeepAlive_TIMEOUT which is part of the wapi.h file.
 The wKeepAlive() function returns WSUCCESS if a valid exchange took place to renew a 10 seconds working communication,  or WZERO if no exchange was necessary. The function can also return the values of WSEND_ERROR or WRECV_ERROR if communication was not successful.
+
+
+# int wGetVoidPToken(wtoken *token, void* vpt)()
+The wGetVoidPToken() API call is a specific Get function. Unlike other Get functions previously presented in this document, it does not expect data from a specific token, nor a specified format in which the data from the console should be converted to. The function will check the WING receive event queue for data and will only return when data is received by removing the oldest event available from the queue. If no valid data is found, a value of WZERO is returned. 
+When data is available in the event queue, the oldest even is retrieved, and its token is returned in the token variable. The data associated to the token is also returned to the calling application using the vpt variable. The function returns WSUCCESS if data has been returned to the calling program, WZERO if no suitable format conversion was found. It can also return WRECV_ERROR on TCP read errors. Attempting to get a value from a token of type NODE will return WNODE.
 
 
 # int wGetVoidPTokenTimed(wtoken *token, void* vpt, int timeout)()
