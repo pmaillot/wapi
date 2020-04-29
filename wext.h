@@ -21,6 +21,7 @@ extern int wGetStringToken(wtoken tokenval, float *fval);
 extern int wGetFloatTokenTimed(wtoken tokenval, float *fval, int timeout);
 extern int wGetIntTokenTimed(wtoken tokenval, int *ival, int timeout);
 extern int wGetStringTokenTimed(wtoken tokenval, char* str, int timeout);
+extern int wGetVoidPToken(wtoken *tokenval, void *vpt);
 extern int wGetVoidPTokenTimed(wtoken *tokenval, void *vpt, int timeout);
 
 extern int wSetTokenFloat(wtoken tokenval, float fval);
