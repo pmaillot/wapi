@@ -1,5 +1,5 @@
 # wapi
-version 0.3
+version 0.4
 
 A C language API for WING digital mixers
 
@@ -272,6 +272,223 @@ In a typical, simple example of use of the two API calls shown in the following 
 
 
 
+# Nodes
+In many applications as well as in browsing over the JSON data structure, one can easily envision it would be interesting for optimization purposes to get and set a group of attributes at once, rather than establishing communication requests for each single parameter.
+
+Nodes were introduced in the X32 family to enable this functionality, and have been widely used in several applications for controlling the desk; In the case of WING this may be even more interesting due to the very large number/volume of parameter data  available as one unrolls each branch in the JSON tree opening a new level of nodes and parameters. Each branch of the JSON tree can be pictured as a collection of flat layers, hence introducing the notion of nodes;
+Flattening the WING JSON structure results in layers/lines of identifiers which can be nodes or parameter values. When a given layer only contains nodes, it can be removed from the list of WING nodes as no setting changes can result in consulting these. Similarly, when within a given layer, a mix of values and nodes are present, the layer can be limited to only include values, reducing the amount of data to be transferred during network communications. 
+
+As the set of values in a node list is fixed and of known type; it can be set and retrieved as a single line of text with pre-formatted data so this is easier to store and manage in applications. Each returned string is formatted according to the Linux string definition: a series of 1byte characters, followed by a line feed character (\n) and NULL terminated (\0).  
+The presence of the line feed character is only there to help creating text files directly from node data, without any need for further formatting at the application level.
+The following functions list API entries to use WING nodes as defined above.
+
+
+ 
+# int wSetNode(wtoken node, char *str
+
+The wGetNode() function will parse the string values contained in str according to the format conversions needed to fill all values of the node provided by token node. Each value of the node will be set accordingly to the result of the conversion. 
+If the list of values contained in str leads to a shorter list of attributes, the remaining attributes of the node will remain unmodified. 
+The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected.
+
+
+
+# int wGetNode(wtoken node, char *str)
+
+The wGetNode() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line-feed and a null byte.
+
+
+
+# int wGetNodeTimed(wtoken node, char *str, int timeout)
+
+As for the non-timed version, The wGetNodeTimed() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. For each leaf tag part of the node being returned, the function applies a timeout timeout for retrieving data. If data cannot be gotten in time, a value of WZERO is returned. As data is retrieved from the console, the function ensures it corresponds to each respective leaf token, as unsolicited data could be presented by the console during the working cycle of the timed function.
+The function can also report other errors if communication issues were detected. The line of text returned in str by the function end with a line-feed and a null byte.
+Note: a value of 10000 for timeout seems a safe bet; Indeed, lower values may return from the internal function calls too soon for valid data to be returned by the function.
+
+ 
+Requesting the full set of nodes from a freshly initialized console  results in a file of 3300+ lines, and more than 170kbytes. It takes approximatively 20 seconds over WIFI to execute a full dump. We show below a few lines of nodes as they are proposed by wapi when using wGetNode() or wGetNodeTimed() for channel 1:
+
+    node ch: 
+    node ch.1: 
+    node ch.1.in: 
+    node ch.1.in.set: M 0 0 0 0.000000 0.000000 0.000000 0 0.000000 
+    node ch.1.in.conn: LCL 1 OFF 1 
+    node ch.1.flt: 0 100.237457 0 10018.260742 0 TILT 0.000000 
+    node ch.1.peq: 0.000000  0.000000 99.685432 1.995882 0.000000 999.250488 1.995882 0.000000 10016.527344 10016.527344  
+    node ch.1.gate: 0 GATE -40.000000 40.000000 10.000000 10.000000 199.404282 0.000000 1:3 
+    node ch.1.gatesc: OFF 1002.374390 1.995882 SELF IN 0 
+    node ch.1.eq: 0  STD 100.000000 0 1 0.000000 80.196419 1.995882 SHV 0.000000 200.000000 1.995882 0.000000 601.388367 1.995882 0.000000 1499.788330 1.995882 0.000000 3990.524414 1.995882 0.000000 11994.417969 1.995882 SHV 
+    node ch.1.dyn: 0 COMP 100.000000 0.000000 -10.000000 3.000000 3 RMS 50.000000 20.000000 152.565186 LOG 1 
+    node ch.1.dynxo: 6.000000 OFF 1002.374390 0 
+    node ch.1.dynsc: OFF 1002.374390 1.995882 SELF IN 0 
+    node ch.1.preins: 0 NONE - 
+    node ch.1.main: 
+    node ch.1.main.1: 1 0.000000 
+
+
+
+# Effects and Plugins
+WING comes with an impressive number of effects, plugins and emulations that can be used on any channel without costing any FX slots. In every channel, Gate, EQ Compressor can take different processing models you can organize and change on the fly. The following pages below present the different effects and their parameters.
+
+# Plugins
+Plugins entries are directly included with channels, busses, etc. and can either default to WING standard algorithms or adapt to alternative plugins to color your sound or fit your taste when it comes to mixing. Plugins are showing under the main JSON structure, only when instantiated. WING Channel audio engines enable 4 sorts of plugins: Filter, Gate, EQ and Dynamics. Bus, Main and Matrix audio engines support EQ and Dynamics plugins.
+
+The choice of plugin is represented by the name (or model) of the plugin, as set under the respective “mdl” token; After a console reset, the default channel Filter, Gate, EQ and Dynamics plugins will be  “TILT”, “GATE”, “STD”,  and “COMP”, respectively, and these can be changed to one of the multiple plugins available within the console (respecting the category they apply to of course).
+The choice of plugin is represented by the name (or model) of the plugin, as set under the respective “mdl” token; authorized values are:
+
+# Filters:
+    TILT EQ, MAXER, AP 90, AP 180
+
+# Gates:
+    GATE/EXPANDER, DUCKER, EVEN 88 GATE, SOUL 9000 GATE, DRAW MORE 241, BDX902 DEESSER, WAVE DESIGNER, DYNAMIC EQ, SOUL WARMTH PRE, 76 LIMITER AMP, LA LEVELER, AUTO RIDER
+
+# Equalizers:
+    WING EQ, SOUL ANALOGUE, EVEN 88 FORMANT, EVEN 84, FORTISSIMO 110, PULSAR, MACH EQ4
+
+# Compressors:
+    WING COMPRESSOR, WING EXPANDER, BDX 160 COMP, BDX 560 EASY, DRAW MORE COMP, EVEN COMP/LIM, SOUL 9000, SOUL BUS COMP, RED3 COMPRESSOR, 76 LIMITER AMP, LA LEVELER, FAIR KID, ETERNAL BLISS, NO-STRESSOR, WAVE DESIGNER, AUTO RIDER
+
+In order for a wapi program to gain access to plugin parameters, independently from the plugin being installed/loaded at a given slot, the plugin parameter names are being ‘anonymized’ to names p01…pnn, rather than the names that are listed with each single plugin. The actual parameter names for each separate plugin are listed in the plugin description tables later in this document and are preceded with their apparition number in the plugin parameter list; For example, to access the “range“ value of plugin “GATE“ used in channel 03, you would set the token value to CH_3_GATE_P02.
+
+In the small program shown below, we replace the default Gate and Compressor plugins for Channel 1 and set their respective parameters values to arbitrary values. For this example, we use the settings of the AUTO RIDER DYNAMICS gate and Compressor plugins; note that the settings are different for Gate and Compressor, despite the plugin carrying the same name.
+
+
+    #include <stdio.h>
+    #include “wapi.h”
+    #include “wext.h”	
+
+    int main () {
+
+        char  wingip[24] = "";
+
+        // we don’t know the IP of our console…
+        if (wOpen(wingip)!= WSUCCESS) exit(1);
+        printf("WING found at IP: %s\n", wingip);
+        printf("Using version %i.%i\n", wVer()/256, wVer());
+
+        wSetTokenString(CH_1_GATE_MDL, "RIDE");	//Auto Rider Dynamics
+        wSetTokenFloat(CH_1_GATE_P01, -30.);		// thr
+        wSetTokenFloat(CH_1_GATE_P02, 0.);		// tgt
+        wSetTokenInt(CH_1_GATE_P03, 20);		// spd
+        wSetTokenFloat(CH_1_GATE_P04, 8.);		// ratio
+        wSetTokenFloat(CH_1_GATE_P05, 0.5);		// hold
+        wSetTokenFloat(CH_1_GATE_P06, 6.0);		// range
+
+        wSetTokenString(CH_1_DYN_MDL, "RIDE");	//Auto Rider Dynamics
+        wSetTokenFloat(CH_1_DYN_P01, 50.);		// mix
+        wSetTokenFloat(CH_1_DYN_P02, 0.);		// gain
+        wSetTokenFloat(CH_1_DYN_P03, -30.);		// thr
+        wSetTokenFloat(CH_1_DYN_P04, 0.);		// tgt
+        wSetTokenInt(CH_1_DYN_P05, 20);		// spd
+        wSetTokenFloat(CH_1_DYN_P06, 4.);		// ratio
+        wSetTokenFloat(CH_1_DYN_P07, 0.5);		// hold
+        wSetTokenFloat(CH_1_DYN_P08, 3.0);		// range
+
+        return 0;
+    }
+
+
+
+ 
+# Effects
+Effects nodes are part of the main JSON structure, under the fx.n names, with n: [1…16] representing the 16 effects slots available for simultaneous use in the WIN audio processing. These 16 slots are divided in two sets of slots: 1-8 and slots 9-16 dedicated to premium effects and standard effects, respectively. As one can expect, premium effect slots can be running standard effects too.
+
+As in the case of plugins, the choice of effect is represented by the name (or model) of the effect, as set under the respective “mdl” token; authorized values are: 
+
+# Premium
+    NONE, EXTERNAL, HALL REVERB, ROOM REVERB, CHAMBER REVERB, PLATE REVERB, CONCERT REVERB, AMBIENCE, VINTAGE ROOM, VINTAGE REVERB, VINTAGE PLATE, GATED REVERB, REVERSE REVERB, ELAY/REVERB, SHIMMER REVERB, SPRING REVERB, DIMENSION CRS, STEREO CHORUS, STEREO FLANGER, STEREO DELAY, ULTRATAP DELAY, TAPE DELAY, OILCAN DELAYB, BD DELAY, STEREO PITCH, DUAL PITCH, VSS3 REVERB, 
+
+# Standard
+    NONE, EXTERNAL, GRAPHIC EQ, PIA 560 GEQ, DOUBLE VOCAL, PRECISION LIMITER, 2-BAND DEESSER, ULTRA ENHANCER, EXCITER, PSYCHO BASS, ROTARY SPEAKER, PHASER, TREMOLO/PANNER, TAPE MACHINE, MOOD FILTER, SUB OCTAVER, RACK AMP, UK ROCK AMP, ANGEL AMP, JAZZ CLEAN AMP, DELUXE AMP, SOUL ANALOGUE, EVEN 88 FORMANT, EVEN 84, FORTISSIMO 110, PULSAR, MACH EQ4
+
+Effects can be used as dedicated inserts at two defined location within the audio path: pre and post xxx.
+If an effect is part of a channel insert, assigning the effect to a different channel will remove the effect from its previous channel assignment. In order to create a more traditional effect bus, WING requires to dedicate one of the channels to the operation; Channels that want to use the effect bus can the send their audio (or a part of it) to the channel that carries the effect, creating an effect mix bus that will apply the same effect to several sources mixed into the effect channel and provide the resulting effect as a traditional effect return that can be routed to a bus.
+
+As for the case of plugins, Effect types/engines are represented by their respective model name under the “mdl” tag, enabling the selection (loading) of a specific in one of the 16 available effect slots.
+
+The JSON tree dedicated to effects has the following structure:
+    “fx”: {
+        “1”: {
+            “mdl”: “NONE”,
+            “fxmix”: 100
+        }
+    “2”…“16”: {}
+    }
+
+In fact, there are a few more, read-only  elements in the actual WING structure of a non-affected effect slot, resulting in the following JSON structure:
+    “fx”: {
+        “1”: {
+            “mdl”: “NONE”,
+            “fxmix”: 100,
+            “$esrc”: 0,	external source: [0…400]
+            “$emode”: M,	external mode: Mono, Stereo, Mid/Side
+            “$a_chn”: 0,	assign channel: [0…76]
+            “$a_pos”: 0	assign position: 0, 1]
+        }
+    “2”…“16”: {}
+    }
+
+Once an effect is assigned to a slot, the JSON structure for the respective slot is extended to include the parameters for the assigned effect. For example, installing reverb effect “ROOM” in effect slot 5 will result in the following update to the JSON of effect 5:
+    “fx”: {
+    …
+        “5”: {
+            “mdl”: “ROOM”,
+            “fxmix”: 100
+            “$esrc”: 0, [0…400]
+            “$emode”: M,	[M, ST, M/S]
+            “$a_chn”: 0,	[0, 1]
+            “$a_pos”: 0,	[0, 1]
+            “pdel”:	pre-delay
+            “size”:	room size
+            “dcy”:		decay
+            “mult”:	bass multiplier
+            “damp”:	damping
+            “lc”:		low cut
+            “hc”:		high cut
+            “shp”:		shape
+            “sprd”:	spread
+            “diff”:	diffusion
+            “spin”:	spin
+            “ecl”:		echo left
+            “ecr”:		echo right
+            “efl”:		feed left
+            “efr”:		feed right
+        }
+    …
+    }
+
+Each available effect is a sort of program including a set of dedicated parameters. When choosing a specific effect, the effect program is instantiated in one of the available slots and its parameters are mapped to the main Jason parameters lists for that particular effect slot, thus enabling for example up to 16 different copies  of the same effect to be active on every effect slots, with differentiated parameters for each slot.
+The tables below will list the effect names and parameters, and the parameter types associated with each known effect.
+In order for a wapi program to gain access to effect parameters, independently from the effect being installed/loaded at a given slot, parameter names are being ‘anonymized’ to names p01…p32, rather than the names that are listed with each single effect. These names listed in the tables below are preceded with their apparition number in the effect parameter list; For example, to access frequency band 125Hz of a Graphics EQ effect loaded at effect slot 12, you would set the token value to FX_12_P09.
+
+To set/instantiate an effect in one of the 16 WING FX slots, just set the model name of the effect; The effect engine will be loaded to the effect slot, discarding a previous one if there was one already. The newly installed effect parameters will become available for tweaking the effect to your settings. Model names can be found behind the tag: “mdl” in the tables below.
+
+In the code example below is shown the instantiation of a graphic equalizer at effect slot 1, and the manipulation of its full set of parameters; In no way an interesting EQ setting, but a simple program example on how to install an effect and set parameters.
+
+    int main() {
+        char  wingip[24] = "";
+        char *ty[] = {"std", "tru"};
+        //
+        // we don’t know the IP of our console…
+        if (wOpen(wingip)!= WSUCCESS) exit(1);
+        printf("WING found at IP: %s\n", wingip);
+        printf("Using version %i.%i\n", wVer()/256, wVer());
+        //
+        int j = 0;
+        float f = -15.;
+        wSetTokenString(FX_1_MDL, "geq");
+        while(1) {
+            for (int i = FX_1_P02; i <= FX_1_P32; i++)
+                wSetTokenFloat(i, f); // bands 30Hz to 20kHz
+            Sleep(1);                    // slow down!
+            f += 0.25;
+            if (f > 15.) {
+                f = -15;
+                j ^= 1;
+                wSetTokenString(FX_1_P01, ty[j]);  // type
+            }
+        }
+        return 0;
+    }
 
  
 
