@@ -491,5 +491,99 @@ In the code example below is shown the instantiation of a graphic equalizer at e
     }
 
  
+# Meters
+
+WING offers many measurement points along the digital audio path; As a result, there are numerous meters. As briefly presented in a table earlier in this document, every Channels, Aux, Bus, Main and Matrix strip offers no less than 8 meters: input left & right, output left & right, gate & dyn key & gain. This alone represents 608 meters that can be retrieved, and there are much more.
+The network data path for getting meter values is separated from the main network communication in order to keep things simpler for the programmer and sound engineer.
+Meter data is transmitted to a UDP port chosen by the user. When selecting which meters to receive, the user associates an ID to the request, enabling simpler identification of the received data. As soon as a valid meter request is received, WING will send back the respective meter data for 5 seconds, every approximately every 50ms. In order to continue or continuously receive a set of meter data, the user must renew the request for data by issuing a simple renew command containing the ID of the requested meter set.
+
+wapi offers a small set of function calls to help programmers manage meter data. it hides the networking complexity and proposes a simple way of selecting what meter to get back from the digital console. Meter data will be provided back to the application in the form of a buffer of values, decoding data being left to the application.
+
+
+# int wMeterUDPPort (int wport)
+The wMeterUDPPort() API call enable users to select the UDP port WING will send meter data to. It also prepares the wapi internal network for receiving meter data and being able to return data to the user application. wport is a standard UDP port and must be available for receiving data. The function returns WSUCCESS if everything is set correctly or will return an error value if the request was not successful.
+
+
+# int wSetMetersRequest(int reqID, unsigned char *wMid)
+wSetMetersRequest() must be called in order to start receiving meter data. The API associates a request ID reqID to a selection of meters to receive. The request ID helps renewing the request for data and sorting through potentially multiple data sets sent by the console. The wMid parameter holds the selection of meters that can be recovered from WING in an array of 19 bytes. Each bit (from left to right) of the array bytes represents a meter family that can be received from the console, and is shown in the table below:
+
+    byte index	bits	selection
+    0-5	        1-40	Channel 1-40
+    6	        1-8 	Aux 1-8
+    7-8     	1-16	Bus 1-16
+    9	        1-4   	Main 1-4
+    10	        1-8	    Matrix 1-8
+    11	        1-8	    DCA 1-8
+    12-13	    1-16	FX proc 1-16
+    14-15	    1-16	Source input 1-16
+    16-17	    1-11	Output 1-11
+    18	        1	    Monitor
+    19	        1	    RTA
+
+For example, a C source language array declaration as follows will request meters for channels 1 and 40:
+
+    unsigned char	mbits[19] = {0x80, 0, 0, 0, 0x01};	// bytes 6 to 19 are 0   
+
+
+
+# int wRenewMeters(int reqID)
+The wRenewMeters()  API call is used to renew a previous request for meter data; This function should be called every 5 seconds maximum in order to avoid losing meter data if continuous receiving is expected. The reqID parameter must be previously defined with a call to wSetMetersRequest(). The function returns WSUCCESS if the request is accepted, or will return other error status values otherwise.
+
+
+# int wGetMeters(unsigned char *buf, int maxlen, int timeout)
+wGetMeters() will check if meter data has been received or is available. The call can be blocking or un-blocking depending on the value of timeout. A timeout of 0 will block the application in reading mode until data is available. A non-zero value of timeout, expressed in micro-seconds will return after the provided value and return to the caller with a value of WZERO (0) if no data is available or will return sooner with the actual number of bytes read available in buf. 
+The maxlen parameter indicates the maximum number of bytes buf can hold. It is the responsibility of the application to ensure buf is large enough to accept maxlen bytes.
+The data returned by the wGetMeters() function is coded as follows:
+<reqID><[meter data group][meter data group]  … >
+Each meter data group is composed of a number of big-endian short (16bits) ints representing a meter value expressed in 1/256th of a dB. The table below provides the number and origin of each meter data for each of the possible 11 meter groups:
+    Group name      Contents
+    channel         input left
+    aux             input right
+    bus             output left
+    main            output right
+    matrix	        gate key  
+                    gate gain
+                    dyn key
+                    dyn gain
+       
+    dca	            pre fader left
+                    pre fader right
+                    post fader left
+                    post fader right
+                    
+    fx	            input left
+                    input right
+                    output left
+                    output right
+                    state meters (1…6)
+                    
+    source	        source group levels (i.e. local ins: 8 meters)
+    
+    output	        output group levels (i.e. local outs: 8 meters)
+    
+    monitor	        solo bus left
+                    solo bus right
+                    mon 1 left
+                    mon 1 right
+                    mon 2 left
+                    mon 2 right
+                    
+    rta         	rta slot meters (120)
+
+
+
+Below is an example of buffers received after requesting meter data for channel 1 and using different sources, with Ch 1 fader set to +3dB. 
+As received data uses signed 16bits ([-32768…+32767]) and is expressed in 1/256th of dB, the actual meter value can be calculated as <int16>/256. 
+
+
+                                          gate gate  dyn  dyn
+              <reqID>  inL  inR outL outR  key gain  key gain
+
+    W→ 20 B: 00000002 9bb2 9bb2 8000 8000 9b7c 0000 8000 0000 (no input)
+                      -100 -100 -128 -128 -100    0 -128    0 
+    W→ 20 B: 00000002 f9fb f9fb fcfb fcfb f9fb 0000 ee01 0000 (OSC 1kHz, -6dB)
+                        -6   -6   -3   -3   -6    0  -17    0
+    W→ 20 B: 00000002 d7fd d7fd dafd dafd d7fd 0000 aa02 0000 (OSC 1kHz, -40dB)
+                       -40  -40  -37  -37  -40    0  -85    0
 
 
