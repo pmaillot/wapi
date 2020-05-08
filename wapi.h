@@ -12,16 +12,30 @@
 
 #define wKeepAlive_TIMEOUT	7
 
-typedef enum type {
+typedef enum wtype {
 	UNKN = -1,
 	NODE,
 	I32,
 	F32,
 	S32
-} type;
-
+} wtype;
 
 typedef enum {
+	WMCHAN = 0xa0,
+	WMAUX,
+	WMBUS,
+	WMMAIN,
+	WMATRX,
+	WMDCA,
+	WMFXP,
+	WMIDEV,
+	WMODEV,
+	WMMON,
+	WMRTA
+} wMdef;
+
+typedef enum {
+	WBIND_UDP_ERROR		=-8,
 	WSEND_NTW_ERROR		=-7,
 	WSEND_UDP_ERROR		=-6,
 	WSEND_TCP_ERROR		=-5,
