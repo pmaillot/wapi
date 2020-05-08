@@ -507,11 +507,12 @@ The wMeterUDPPort() API call enable users to select the UDP port WING will send 
 # int wSetMetersRequest(int reqID, unsigned char *wMid)
 wSetMetersRequest() must be called in order to start receiving meter data. The API associates a request ID reqID to a selection of meters to receive. The request ID helps renewing the request for data and sorting through potentially multiple data sets sent by the console. The wMid parameter holds the selection of meters that can be recovered from WING in an array of 19 bytes. Each bit (from left to right) of the array bytes represents a meter family that can be received from the console, and is shown in the table below:
 
-    byte index  bits	selection
-    0-5         1-40  Channel 1-40
+    byte index  bits    selection
+    
+    0-5         1-40    Channel 1-40
     6           1-8     Aux 1-8
     7-8         1-16    Bus 1-16
-    9           1-4   	Main 1-4
+    9           1-4     Main 1-4
     10          1-8	    Matrix 1-8
     11          1-8	    DCA 1-8
     12-13       1-16    FX proc 1-16
@@ -538,6 +539,7 @@ The data returned by the wGetMeters() function is coded as follows:
 Each meter data group is composed of a number of big-endian short (16bits) ints representing a meter value expressed in 1/256th of a dB. The table below provides the number and origin of each meter data for each of the possible 11 meter groups:
     
     Group name      Contents
+    
     channel         input left
     aux             input right
     bus             output left
