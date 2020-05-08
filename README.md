@@ -508,17 +508,17 @@ The wMeterUDPPort() API call enable users to select the UDP port WING will send 
 wSetMetersRequest() must be called in order to start receiving meter data. The API associates a request ID reqID to a selection of meters to receive. The request ID helps renewing the request for data and sorting through potentially multiple data sets sent by the console. The wMid parameter holds the selection of meters that can be recovered from WING in an array of 19 bytes. Each bit (from left to right) of the array bytes represents a meter family that can be received from the console, and is shown in the table below:
 
     byte index	bits	selection
-    0-5	        1-40	Channel 1-40
-    6	        1-8 	Aux 1-8
-    7-8     	1-16	Bus 1-16
-    9	        1-4   	Main 1-4
-    10	        1-8	    Matrix 1-8
-    11	        1-8	    DCA 1-8
-    12-13	    1-16	FX proc 1-16
-    14-15	    1-16	Source input 1-16
-    16-17	    1-11	Output 1-11
-    18	        1	    Monitor
-    19	        1	    RTA
+    0-5	        1-40    Channel 1-40
+    6           1-8     Aux 1-8
+    7-8     	1-16    Bus 1-16
+    9           1-4   	Main 1-4
+    10          1-8	    Matrix 1-8
+    11          1-8	    DCA 1-8
+    12-13       1-16    FX proc 1-16
+    14-15       1-16    Source input 1-16
+    16-17       1-11    Output 1-11
+    18          1       Monitor
+    19          1       RTA
 
 For example, a C source language array declaration as follows will request meters for channels 1 and 40:
 
@@ -541,11 +541,11 @@ Each meter data group is composed of a number of big-endian short (16bits) ints 
     aux             input right
     bus             output left
     main            output right
-    matrix	        gate key  
+    matrix          gate key  
                     gate gain
                     dyn key
                     dyn gain
-       
+
     dca	            pre fader left
                     pre fader right
                     post fader left
@@ -557,9 +557,9 @@ Each meter data group is composed of a number of big-endian short (16bits) ints 
                     output right
                     state meters (1…6)
                     
-    source	        source group levels (i.e. local ins: 8 meters)
+    source          source group levels (i.e. local ins: 8 meters)
     
-    output	        output group levels (i.e. local outs: 8 meters)
+    output          output group levels (i.e. local outs: 8 meters)
     
     monitor	        solo bus left
                     solo bus right
@@ -568,7 +568,7 @@ Each meter data group is composed of a number of big-endian short (16bits) ints 
                     mon 2 left
                     mon 2 right
                     
-    rta         	rta slot meters (120)
+    rta             rta slot meters (120)
 
 
 
