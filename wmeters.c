@@ -84,14 +84,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
 	int					ival = 0;
 	//
 	WNDCLASSW wc = {0};
-	wc.lpszClassName = L"X32PunchControl";
+	wc.lpszClassName = L"wapi demo";
 	wc.hInstance = hInstance;
 	wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
 	wc.lpfnWndProc = WndProc;
 	wc.hCursor = LoadCursor(0, IDC_ARROW);
 	//
 	RegisterClassW(&wc);
-	CreateWindowW(wc.lpszClassName, L"wmeters - WING meters wapi demo",
+	CreateWindowW(wc.lpszClassName, L"wmeters - WING meters",
 		WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU,
 		100, 220, 150, 250, 0, 0, hInstance, 0);
 	//
