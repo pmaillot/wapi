@@ -1,5 +1,5 @@
 # wapi
-version 0.4
+version 0.5
 
 A C language API for WING digital mixers
 
