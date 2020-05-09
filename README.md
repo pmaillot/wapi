@@ -406,16 +406,18 @@ If an effect is part of a channel insert, assigning the effect to a different ch
 As for the case of plugins, Effect types/engines are represented by their respective model name under the “mdl” tag, enabling the selection (loading) of a specific in one of the 16 available effect slots.
 
 The JSON tree dedicated to effects has the following structure:
-        “fx”: {
+ ``` 
+    “fx”: {
             “1”: {
                 “mdl”: “NONE”,
                 “fxmix”: 100
             }
         “2”…“16”: {}
         }
-
+```
 In fact, there are a few more, read-only  elements in the actual WING structure of a non-affected effect slot, resulting in the following JSON structure:
-        “fx”: {
+``` 
+    “fx”: {
             “1”: {
                 “mdl”: “NONE”,
                 “fxmix”: 100,
@@ -426,9 +428,10 @@ In fact, there are a few more, read-only  elements in the actual WING structure 
             }
         “2”…“16”: {}
         }
-
+```
 Once an effect is assigned to a slot, the JSON structure for the respective slot is extended to include the parameters for the assigned effect. For example, installing reverb effect “ROOM” in effect slot 5 will result in the following update to the JSON of effect 5:
-        “fx”: {
+```
+    “fx”: {
         …
             “5”: {
                 “mdl”: “ROOM”,
@@ -455,7 +458,7 @@ Once an effect is assigned to a slot, the JSON structure for the respective slot
             }
         …
         }
-
+```
 Each available effect is a sort of program including a set of dedicated parameters. When choosing a specific effect, the effect program is instantiated in one of the available slots and its parameters are mapped to the main Jason parameters lists for that particular effect slot, thus enabling for example up to 16 different copies  of the same effect to be active on every effect slots, with differentiated parameters for each slot.
 The tables below will list the effect names and parameters, and the parameter types associated with each known effect.
 In order for a wapi program to gain access to effect parameters, independently from the effect being installed/loaded at a given slot, parameter names are being ‘anonymized’ to names p01…p32, rather than the names that are listed with each single effect. These names listed in the tables below are preceded with their apparition number in the effect parameter list; For example, to access frequency band 125Hz of a Graphics EQ effect loaded at effect slot 12, you would set the token value to FX_12_P09.
