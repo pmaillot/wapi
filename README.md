@@ -406,55 +406,55 @@ If an effect is part of a channel insert, assigning the effect to a different ch
 As for the case of plugins, Effect types/engines are represented by their respective model name under the “mdl” tag, enabling the selection (loading) of a specific in one of the 16 available effect slots.
 
 The JSON tree dedicated to effects has the following structure:
-    “fx”: {
-        “1”: {
-            “mdl”: “NONE”,
-            “fxmix”: 100
+        “fx”: {
+            “1”: {
+                “mdl”: “NONE”,
+                “fxmix”: 100
+            }
+        “2”…“16”: {}
         }
-    “2”…“16”: {}
-    }
 
 In fact, there are a few more, read-only  elements in the actual WING structure of a non-affected effect slot, resulting in the following JSON structure:
-    “fx”: {
-        “1”: {
-            “mdl”: “NONE”,
-            “fxmix”: 100,
-            “$esrc”: 0,	external source: [0…400]
-            “$emode”: M,	external mode: Mono, Stereo, Mid/Side
-            “$a_chn”: 0,	assign channel: [0…76]
-            “$a_pos”: 0	assign position: 0, 1]
+        “fx”: {
+            “1”: {
+                “mdl”: “NONE”,
+                “fxmix”: 100,
+                “$esrc”: 0,	external source: [0…400]
+                “$emode”: M,	external mode: Mono, Stereo, Mid/Side
+                “$a_chn”: 0,	assign channel: [0…76]
+                “$a_pos”: 0	assign position: 0, 1]
+            }
+        “2”…“16”: {}
         }
-    “2”…“16”: {}
-    }
 
 Once an effect is assigned to a slot, the JSON structure for the respective slot is extended to include the parameters for the assigned effect. For example, installing reverb effect “ROOM” in effect slot 5 will result in the following update to the JSON of effect 5:
-    “fx”: {
-    …
-        “5”: {
-            “mdl”: “ROOM”,
-            “fxmix”: 100
-            “$esrc”: 0, [0…400]
-            “$emode”: M,	[M, ST, M/S]
-            “$a_chn”: 0,	[0, 1]
-            “$a_pos”: 0,	[0, 1]
-            “pdel”:	pre-delay
-            “size”:	room size
-            “dcy”:		decay
-            “mult”:	bass multiplier
-            “damp”:	damping
-            “lc”:		low cut
-            “hc”:		high cut
-            “shp”:		shape
-            “sprd”:	spread
-            “diff”:	diffusion
-            “spin”:	spin
-            “ecl”:		echo left
-            “ecr”:		echo right
-            “efl”:		feed left
-            “efr”:		feed right
+        “fx”: {
+        …
+            “5”: {
+                “mdl”: “ROOM”,
+                “fxmix”: 100
+                “$esrc”: 0, [0…400]
+                “$emode”: M,	[M, ST, M/S]
+                “$a_chn”: 0,	[0, 1]
+                “$a_pos”: 0,	[0, 1]
+                “pdel”:	pre-delay
+                “size”:	room size
+                “dcy”:		decay
+                “mult”:	bass multiplier
+                “damp”:	damping
+                “lc”:		low cut
+                “hc”:		high cut
+                “shp”:		shape
+                “sprd”:	spread
+                “diff”:	diffusion
+                “spin”:	spin
+                “ecl”:		echo left
+                “ecr”:		echo right
+                “efl”:		feed left
+                “efr”:		feed right
+            }
+        …
         }
-    …
-    }
 
 Each available effect is a sort of program including a set of dedicated parameters. When choosing a specific effect, the effect program is instantiated in one of the available slots and its parameters are mapped to the main Jason parameters lists for that particular effect slot, thus enabling for example up to 16 different copies  of the same effect to be active on every effect slots, with differentiated parameters for each slot.
 The tables below will list the effect names and parameters, and the parameter types associated with each known effect.
