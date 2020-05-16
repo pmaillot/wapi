@@ -1,16 +1,19 @@
 # wapi
 version 0.5
 
-A C language API for WING digital mixers
+A C language API for WING Digital Mixing Consoles
+
+
+![WING personal digital mixing console](https://sites.google.com/site/patrickmaillot/home/wing/Wing%20Default.snap.png?attredirects=0)
 
 This repo is a C code API to WING digital mixing consoles. Ver 0.1 (first release) is capable of get and set *all* WING parameters according to FW 1.06.
-This represents more than 24000 parameters!
+This represents more than 28000 parameters!
 
 The API uses UDP and TCP networking to establish a connection to the WING console. Typical communication take place over TCP/IP on port 2222.
 
 Parameters can be nodes, int, float or string
 
-Get functions can be attended, timed, or unattended (such as in event loops)
+Get functions can be attended, timed, or unattended (such as in event programming/loops)
 Set functions are... set :)
 
 Node management will be part of a later release.
