@@ -21,6 +21,8 @@ typedef unsigned short boolean;
 #endif
 
 #define NSTEPS		20
+
+int main() {
 	wtoken			mytoken;
 	int				mvalue, i;
 	float			fvalue, dvalue, rvalue;
