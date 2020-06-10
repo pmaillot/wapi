@@ -46,6 +46,7 @@ A typical compilation of a source file wtest.c in a Windows environment can be a
     gcc "-LC:<path to wapi.lib>" -o wtest.exe wtest.o -lwapi -lws2_32
 
 Don’t forget to set the correct path to the wapi.lib file in the above compilation/link lines!
+Someone mentioned that the -mwindows option might be needed in the link line above, after -lws2_32; (to be validated).
 
 
 WING parameters can be set (or modified) using the wSetxxx API family of calls; Similarly, the parameters can be retrieved from WING using the wGetxxx API family of calls. 
