@@ -16,8 +16,6 @@ Parameters can be nodes, int, float or string
 Get functions can be attended, timed, or unattended (such as in event programming/loops)
 Set functions are... set :)
 
-Node management will be part of a later release.
-
 # use
 At the API level, WING data can be 32bit int, 32bit float or string data. All API data in little-endian, enabling easy use in standard programming languages.
 
@@ -153,6 +151,13 @@ If on the contrary data is available from WING, the function will check if the d
 it will then treat the data as done in the wGetStringToken() function; The value retrieved from WING is adapted to string format as expected by the str variable. Similar restrictions and conversion rules apply. Therefore and as examples, inquiring WING token CH_1_EQ_1F will return the current value of the token as a string in str. Inquiring WING token CH_1_EQ_ON will result in a 1-character string of “0” or “1”, depending on the state of the token. Similarly, a token with a floating-point native format would result in a string containing the string representation of the floating-point value. As a last example, inquiring WING token CH_1_NAME will return the string currently used for naming channel 1. Attempting to get a value from a token of type NODE will return WNODE.
 If data is available from WING and the data token is not the expected one, the function discards data and inquires WING for new data. The above takes place as long as timeout is not reached.
 
+
+# Nodes
+
+# int wSetNode(char* str)
+The wSetNode() function parses the string contained in str according to the format used in OSC nodes; For example, a string such as /ch.1.fdr 8.5,mute 1,/bus.1.fdr 5.0,.2.fdr=0.5 will set fader of channel 1 to the 8.5dB value and mute the channel. Bus 1 fader will be set to 5dB and bus 2 fader will be set to 0.5dB.  
+Each parameter group is separated by a ‘,’ character, the ‘/’ character represents the root of the JSON parameter tree, and ‘.’ characters are used to navigate up and down within the JSON parameter tree.  
+The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. 
 
 
 # int wGetNode(wtoken node, char *str) 
