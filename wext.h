@@ -29,6 +29,7 @@ extern int wSetTokenFloat(wtoken tokenval, float fval);
 extern int wSetTokenInt(wtoken tokenval, int ival);
 extern int wSetTokenString(wtoken tokenval, char* str);
 
+extern int wSetNode(char *str);
 extern int wGetNode(wtoken node, char *str);
 extern int wGetNodeTimed(wtoken node, char *str, int timeout);
 
