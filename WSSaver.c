@@ -33,7 +33,7 @@
 //
 char  		wingip[24] = "";
 int			keep_running = 1;
-int			WSSaverTimer = 20;	// Timer value, override with -t option
+int			WSSaverTimer = 10;	// Timer value, override with -t option
 //
 time_t  	WingRemNow;			// 'now' time value (seconds)
 time_t 		WingSsavTmr;		// Saver time value (seconds)
@@ -94,7 +94,6 @@ int main(int argc, char **argv) {
 	while (keep_running) {
 		if (wKeepAlive() < WZERO) {		// Maintain communication
 			printf ("WSSaver: error KeepAlive\n");
-			exit(1);
 		}
 		// Get current time
 		WingRemNow = time(NULL);
@@ -106,6 +105,7 @@ int main(int argc, char **argv) {
 					// Exit screen saver mode
 					for (i = 0; i < 11; i++) wSetTokenInt(WingLTokens[i], WingHiValues[i]);
 					WingSSaveOn = 0;		// Screen saver OFF
+					printf ("screensaver OFF\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"); fflush(stdout);
 				}
 				WingSsavTmr = WingRemNow + WSSaverTimer;
 			} else {
@@ -121,6 +121,7 @@ int main(int argc, char **argv) {
 				if (WingRemNow > WingSsavTmr) {
 					for (i = 0; i < 11; i++)  wSetTokenInt(WingLTokens[i], WingLoValues[i]);
 					WingSSaveOn = 1;	// Screen saver ON
+					printf ("screensaver ON \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"); fflush(stdout);
 				}
 			}
 		}
