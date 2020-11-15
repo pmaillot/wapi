@@ -161,8 +161,8 @@ The function returns a status WSUCCESS if the string was processed with no error
 
 
 # int wGetNode(wtoken node, char *str) 
-The wGetNode() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected.
-
+The wGetNode() function will return in str a string of values separated formatted an in the OSC node convention and corresponding to the node token node.  
+str must be large enough to accept the characters returned by the call. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line‐feed and a \0 byte. 
 
 
 # int wGetNodeTimed(wtoken node, char *str, int timeout) 
