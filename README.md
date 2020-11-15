@@ -1,5 +1,5 @@
 # wapi
-version 0.6
+version 0.09
 
 A C language API for WING Digital Mixing Consoles
 
@@ -295,9 +295,10 @@ The following functions list API entries to use WING nodes as defined above.
  
 # int wSetNode(wtoken node, char *str
 
-The wGetNode() function will parse the string values contained in str according to the format conversions needed to fill all values of the node provided by token node. Each value of the node will be set accordingly to the result of the conversion. 
-If the list of values contained in str leads to a shorter list of attributes, the remaining attributes of the node will remain unmodified. 
-The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected.
+The wSetNode() function parses the string contained in str according to the format used in OSC nodes; 
+For example, a string such as /ch.1.fdr 8.5,mute 1,/bus.1.fdr 5.0,.2.fdr=0.5 will set fader of channel 1 to the 8.5dB value and mute the channel. Bus 1 fader will be set to 5dB and bus 2 fader will be set to 0.5dB.  
+Each parameter group is separated by a ‘,’ character, the ‘/’ character represents the root of the JSON parameter tree, and ‘.’ characters are used to navigate up and down within the JSON parameter tree.  
+The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. Please see an example of use below. 
 
 
 
