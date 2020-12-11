@@ -1,5 +1,5 @@
 # wapi
-version 0.09
+version 0.10
 
 A C language API for WING Digital Mixing Consoles
 
@@ -165,9 +165,38 @@ The wGetNode() function will return in str a string of values separated formatte
 str must be large enough to accept the characters returned by the call. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line‐feed and a \0 byte. 
 
 
-# int wGetNodeTimed(wtoken node, char *str, int timeout) 
-The wGetNodeTimed() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. Eact node recovery attempt will be procedded over a time of value timeout; passed this delay, the function will stop and return WZERO. Timeout applies to any and every of the parameters part of the node node.
+# int wSetNodeFtomTVArray(wTV *TV, int nTV) 
+The wSetNodeFromTVArray() function sends updates to WING  in a single network exchange from the nTV
+elements in wTV (see below) array TV; This is a great way to improve network performance. Although 
+the function is the symmetrical to wGetNodeToTVArray(), it can accept hierarchically organized 
+elements or uncorrelated elements as long as they are not nodes and contain valid tokens‐values sets. 
+The function returns WSUCCESS or an error if one takes place during allocating, preparing or sending the 
+resulting network buffer to WING. 
 
+
+# int wGetNodeToTVArray (wtoken node, wTV *array) 
+The wGetNodeToTVArray() function will return in TV, an array of structures wTV (see below), all values 
+respective of their corresponding token and part of the node token node.  
+array must be large enough to accept the data returned by the call (see below for the number of 
+elements for each level‐1 node). The function the number of tokens in the array array if the node was 
+processed with no errors; It will return WTOKEN if the token provided is not a valid node and WNODE if an 
+error occurs during parsing the data received from the console. The function can also report other 
+errors if communication issues were detected.  
+wTV is a C structure defined in the wapi.h file as follows: 
+typedef struct {
+    wtoken    token;
+    wtype     type;
+    union {
+        int    idata;
+        float  fdata;
+        char*  sdata;
+    } d;
+} wTV;
+©Patrick‐Gilles Maillot  82  WING – V 0.44 
+The filling of the structure is obvious for int and float data; string data sets are dynamically 
+allocated and the pointer of the allocated string is saved in sdata; if the string returned from 
+the console is an empty string, no memory allocation takes place and a NULL pointer is set in 
+sdata.
 
 
 # A Small Program Example
