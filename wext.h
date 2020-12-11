@@ -30,8 +30,10 @@ extern int wSetTokenInt(wtoken tokenval, int ival);
 extern int wSetTokenString(wtoken tokenval, char* str);
 
 extern int wSetNode(char *str);
+extern int wSetNodeFromTVArray(wTV *TV, int nTV);
 extern int wGetNode(wtoken node, char *str);
-extern int wGetNodeTimed(wtoken node, char *str, int timeout);
+extern int wGetNodeToTVArray(wtoken node, wTV *array);
+
 
 extern int wRenewMeters(int reqID);
 extern int wSetMetersRequest(int reqID, unsigned char *wMid);
