@@ -152,53 +152,6 @@ it will then treat the data as done in the wGetStringToken() function; The value
 If data is available from WING and the data token is not the expected one, the function discards data and inquires WING for new data. The above takes place as long as timeout is not reached.
 
 
-# Nodes
-
-# int wSetNode(char* str)
-The wSetNode() function parses the string contained in str according to the format used in OSC nodes; For example, a string such as /ch.1.fdr 8.5,mute 1,/bus.1.fdr 5.0,.2.fdr=0.5 will set fader of channel 1 to the 8.5dB value and mute the channel. Bus 1 fader will be set to 5dB and bus 2 fader will be set to 0.5dB.  
-Each parameter group is separated by a ‘,’ character, the ‘/’ character represents the root of the JSON parameter tree, and ‘.’ characters are used to navigate up and down within the JSON parameter tree.  
-The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. 
-
-
-# int wGetNode(wtoken node, char* str) 
-The wGetNode() function will return in str a string of values separated formatted an in the OSC node convention and corresponding to the node token node.  
-str must be large enough to accept the characters returned by the call. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line‐feed and a \0 byte. 
-
-
-# int wSetNodeFtomTVArray(wTV* TV, int nTV) 
-The wSetNodeFromTVArray() function sends updates to WING  in a single network exchange from the nTV
-elements in wTV (see below) array TV; This is a great way to improve network performance. Although 
-the function is the symmetrical to wGetNodeToTVArray(), it can accept hierarchically organized 
-elements or uncorrelated elements as long as they are not nodes and contain valid tokens‐values sets. 
-The function returns WSUCCESS or an error if one takes place during allocating, preparing or sending the 
-resulting network buffer to WING. 
-
-
-# int wGetNodeToTVArray (wtoken node, wTV* array) 
-The wGetNodeToTVArray() function will return in TV, an array of structures wTV (see below), all values 
-respective of their corresponding token and part of the node token node.  
-array must be large enough to accept the data returned by the call (see below for the number of 
-elements for each level‐1 node). The function the number of tokens in the array array if the node was 
-processed with no errors; It will return WTOKEN if the token provided is not a valid node and WNODE if an 
-error occurs during parsing the data received from the console. The function can also report other 
-errors if communication issues were detected.  
-wTV is a C structure defined in the wapi.h file as follows: 
-`
-typedef struct {
-    wtoken    token;
-    wtype     type;
-    union {
-        int    idata;
-        float  fdata;
-        char*  sdata;
-    } d;
-} wTV;
-
-The filling of the structure is obvious for int and float data; string data sets are dynamically 
-allocated and the pointer of the allocated string is saved in sdata; if the string returned from 
-the console is an empty string, no memory allocation takes place and a NULL pointer is set in 
-sdata.
-`
 
 # A Small Program Example
 Let’s program! Assume you need to programmatically change the name of channels and mute/unmute the respective channels from data contained in a file. Let’s consider the file also contains initial channel faders, and covers channels 1 to 4. The file can be a text file such as:
@@ -321,48 +274,93 @@ As the set of values in a node list is fixed and of known type; it can be set an
 The presence of the line feed character is only there to help creating text files directly from node data, without any need for further formatting at the application level.
 The following functions list API entries to use WING nodes as defined above.
 
+# Nodes
 
- 
-# int wSetNode(wtoken node, char *str
-
-The wSetNode() function parses the string contained in str according to the format used in OSC nodes; 
-For example, a string such as /ch.1.fdr 8.5,mute 1,/bus.1.fdr 5.0,.2.fdr=0.5 will set fader of channel 1 to the 8.5dB value and mute the channel. Bus 1 fader will be set to 5dB and bus 2 fader will be set to 0.5dB.  
+# int wSetNode(char* str)
+The wSetNode() function parses the string contained in str according to the format used in OSC nodes; For example, a string such as /ch.1.fdr 8.5,mute 1,/bus.1.fdr 5.0,.2.fdr=0.5 will set fader of channel 1 to the 8.5dB value and mute the channel. Bus 1 fader will be set to 5dB and bus 2 fader will be set to 0.5dB.  
 Each parameter group is separated by a ‘,’ character, the ‘/’ character represents the root of the JSON parameter tree, and ‘.’ characters are used to navigate up and down within the JSON parameter tree.  
-The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. Please see an example of use below. 
+The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. 
 
 
-
-# int wGetNode(wtoken node, char *str)
-
-The wGetNode() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line-feed and a null byte.
-
+# int wGetNode(wtoken node, char* str) 
+The wGetNode() function will return in str a string of values separated formatted an in the OSC node convention and corresponding to the node token node.  
+str must be large enough to accept the characters returned by the call. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line‐feed and a \0 byte. 
 
 
-# int wGetNodeTimed(wtoken node, char *str, int timeout)
+# int wSetNodeFtomTVArray(wTV* TV, int nTV) 
+The wSetNodeFromTVArray() function sends updates to WING  in a single network exchange from the nTV
+elements in wTV (see below) array TV; This is a great way to improve network performance. Although 
+the function is the symmetrical to wGetNodeToTVArray(), it can accept hierarchically organized 
+elements or uncorrelated elements as long as they are not nodes and contain valid tokens‐values sets. 
+The function returns WSUCCESS or an error if one takes place during allocating, preparing or sending the 
+resulting network buffer to WING. 
 
-As for the non-timed version, The wGetNodeTimed() function will return in str a string of values separated with spaces and corresponding to the node token node. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. For each leaf tag part of the node being returned, the function applies a timeout timeout for retrieving data. If data cannot be gotten in time, a value of WZERO is returned. As data is retrieved from the console, the function ensures it corresponds to each respective leaf token, as unsolicited data could be presented by the console during the working cycle of the timed function.
-The function can also report other errors if communication issues were detected. The line of text returned in str by the function end with a line-feed and a null byte.
-Note: a value of 10000 for timeout seems a safe bet; Indeed, lower values may return from the internal function calls too soon for valid data to be returned by the function.
 
- 
-Requesting the full set of nodes from a freshly initialized console  results in a file of 3300+ lines, and more than 170kbytes. It takes approximatively 20 seconds over WIFI to execute a full dump. We show below a few lines of nodes as they are proposed by wapi when using wGetNode() or wGetNodeTimed() for channel 1:
+# int wGetNodeToTVArray (wtoken node, wTV* array) 
+The wGetNodeToTVArray() function will return in TV, an array of structures wTV (see below), all values 
+respective of their corresponding token and part of the node token node.  
+array must be large enough to accept the data returned by the call (see below for the number of 
+elements for each level‐1 node). The function the number of tokens in the array array if the node was 
+processed with no errors; It will return WTOKEN if the token provided is not a valid node and WNODE if an 
+error occurs during parsing the data received from the console. The function can also report other 
+errors if communication issues were detected.  
+wTV is a C structure defined in the wapi.h file as follows: 
 
-    node ch: 
-    node ch.1: 
-    node ch.1.in: 
-    node ch.1.in.set: M 0 0 0 0.000000 0.000000 0.000000 0 0.000000 
-    node ch.1.in.conn: LCL 1 OFF 1 
-    node ch.1.flt: 0 100.237457 0 10018.260742 0 TILT 0.000000 
-    node ch.1.peq: 0.000000  0.000000 99.685432 1.995882 0.000000 999.250488 1.995882 0.000000 10016.527344 10016.527344  
-    node ch.1.gate: 0 GATE -40.000000 40.000000 10.000000 10.000000 199.404282 0.000000 1:3 
-    node ch.1.gatesc: OFF 1002.374390 1.995882 SELF IN 0 
-    node ch.1.eq: 0  STD 100.000000 0 1 0.000000 80.196419 1.995882 SHV 0.000000 200.000000 1.995882 0.000000 601.388367 1.995882 0.000000 1499.788330 1.995882 0.000000 3990.524414 1.995882 0.000000 11994.417969 1.995882 SHV 
-    node ch.1.dyn: 0 COMP 100.000000 0.000000 -10.000000 3.000000 3 RMS 50.000000 20.000000 152.565186 LOG 1 
-    node ch.1.dynxo: 6.000000 OFF 1002.374390 0 
-    node ch.1.dynsc: OFF 1002.374390 1.995882 SELF IN 0 
-    node ch.1.preins: 0 NONE - 
-    node ch.1.main: 
-    node ch.1.main.1: 1 0.000000 
+
+```
+typedef struct {
+    wtoken    token;
+    wtype     type;
+    union {
+        int    idata;
+        float  fdata;
+        char*  sdata;
+    } d;
+} wTV;
+
+The filling of the structure is obvious for int and float data; string data sets are dynamically 
+allocated and the pointer of the allocated string is saved in sdata; if the string returned from 
+the console is an empty string, no memory allocation takes place and a NULL pointer is set in 
+sdata.
+```
+
+
+Requesting the full set of nodes from a freshly initialized console16 results in a file of 200000+ 
+characters, and is therefore a lot of data to manage. Over WIFI, it approximatively takes 2 to 3 seconds 
+to execute a full dump as OSC‐like node data and 1 to 2 seconds to retrieve a full dump as wTV
+structures.  
+We show below a typical example of the OSC‐like node string for ch.1 returned by wapi when using 
+wGetNode(): 
+```
+node ch:  
+.1.in.set.$mode=M,srcauto=0,altsrc=0,inv=0,trim=0.00,bal=0.00,$g=0.00,$vph=0,dly=0.00,.conn
+.grp=LCL,in=1,altgrp=OFF,altin=1,..flt.lc=0,lcf=100.24,hc=0,hcf=10018.26,tf=0,mdl=TILT,tilt
+=0.00,.clink=0,col=1,name="",icon=1,led=1,mute=0,fdr=144.00,pan=0.00,wid=100.00,$solo=0,$so
+loled=0,solosafe=0,mon=A,proc=GEDI,ptap=4,$presolo=0,peq.on=0,1g=0.00,1f=99.69,1q=2.00,2g=0
+.00,2f=999.25,2q=2.00,3g=0.00,3f=10016.53,3q=2.00,.gate.on=0,mdl=GATE,thr=40.00,range=40.00
+,att=10.00,hld=10.00,rel=199.40,acc=0.00,ratio=1:3,.gatesc.type=OFF,f=1002.37,q=2.00,src=SE
+LF,tap=IN,$solo=0,.eq.on=0,mdl=STD,mix=100.00,$solo=0,$solobd=1,lg=0.00,lf=80.20,lq=2.00,le
+q=SHV,1g=0.00,1f=200.00,1q=2.00,2g=0.00,2f=601.39,2q=2.00,3g=0.00,3f=1499.79,3q=2.00,4g=0.
+00,4f=3990.52,4q=2.00,hg=0.00,hf=11994.42,hq=2.00,heq=SHV,.dyn.on=0,mdl=COMP,mix=100.00,gai
+n=0.00,thr=10.00,ratio=3.00,knee=3,det=RMS,att=50.00,hld=20.00,rel=152.57,env=LOG,auto=1,.d
+ynxo.depth=6.00,type=OFF,f=1002.37,$solo=0,.dynsc.type=OFF,f=1002.37,q=2.00,src=SELF,tap=IN
+,$solo=0,.preins.on=0,ins=NONE,$stat=,.main.1.on=1,lvl=0.00,.2.on=0,lvl=0.00,.3.on=0,lvl=0.
+00,.4.on=0,lvl=0.00,..send.1.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.
+00,.2.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.3.on=0,lvl=144.00,p
+on=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.4.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,pli
+nk=0,pan=0.00,wid=100.00,.5.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.0
+0,.6.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.7.on=0,lvl=144.00,po
+n=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.8.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plin
+k=0,pan=0.00,wid=100.00,.9.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00
+,.10.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.11.on=0,lvl=144.00,p
+on=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.12.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,pl
+ink=0,pan=0.00,wid=100.00,.13.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100
+.00,.14.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.15.on=0,lvl=144.0
+0,pon=0,ind=0,mode=PRE,plink=0,pan=0.00,wid=100.00,.16.on=0,lvl=144.00,pon=0,ind=0,mode=PRE
+,plink=0,pan=0.00,wid=100.00,..postins.on=0,mode=FX,ins=NONE,w=0.00,$stat=,.tags="",$fdr=14
+4.00,$mute=0,$muteovr=0,
+```
+
 
 
 
