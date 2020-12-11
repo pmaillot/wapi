@@ -54,7 +54,7 @@ WING parameters can be set (or modified) using the wSetxxx API family of calls; 
 
 # Open and Close
 
-# int wOpen(char* wip)
+## int wOpen(char* wip)
 wOpen() initializes global variables for the application and opens the communication with a WING console responding at IP address wip.
 wip is a string containing the console IP data in the form “xxx.xxx.xxx.xxx”; if the console IP address is unknown, wip should be an empty string and provide enough characters to store the IP address where WING will be found. The wOpen() function will attempt a network broadcast announce to identify the first WING that will reply on the local network.
 Upon successful completion the function will return WSUCCESS and if the wip parameter was an empty string when calling the function, it will contain the IP at which the console was found. Other values can be returned in case of issues or errors reported.
@@ -62,29 +62,29 @@ Once connection is established with the console, it will be kept active for abou
 It must be noted that as long as a connection is kept active, changes made directly at the console (by moving a fader, or pressing buttons for example) will generate data the application will continuously receive. This can represent a lot of data the application must be ready to accept and manage. It can also be the source of incorrect data returned to Get functions and specific care should be taken when developing live or event-driven applications.
 
 
-# void wClose()
+## void wClose()
 wClose() ensures data is correctly disposed of when your program ends. It should be the last call before the return statement or exit call in your application.
 
 
-# int wVer()
+## int wVer()
 wVer() returns the version of the wapi library file being used. The returned version is in the form ‘major.minor’, and its value is provided as 0x0000MMmm, with MM the major part of the version number and mm representing the minor part.
  
 
 # Setting Values
 
-# int wSetTokenFloat(wtoken token, float fval)
+## int wSetTokenFloat(wtoken token, float fval)
 The wSetTokenFloat()  function takes as input a WING token token and a 32bit float value. It sends to WING the value of fval after it has been adapted to the format expected by the WING token it is sent to. 
 For example, sending value 444.0 to WING token CH_1_EQ_1F will be sent as a 32bit float value. WING will nevertheless adjust it to the nearest valid value of 444.533997. Sending that same value 444.0 to WING token CH_1_EQ_ON will result in a setting to 1; Finally, sending value 444.0 to WING token CH_1_NAME will change the channel name to 444.00.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting the value of fval, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to set a value on a token of type NODE will return WNODE.
 
 
-# int wSetTokenInt(wtoken token, int ival)
+## int wSetTokenInt(wtoken token, int ival)
 The wSetTokenInt()  function takes as input a WING token token and a 32bit integer value. It sends to WING the value of ival after it has been adapted to the format expected by the WING token it is sent to. 
 For example, sending value 444 to WING token CH_1_EQ_1F will be sent as a 32bit float value. WING will also adjust it to the nearest valid value of 444.533997. Sending that same value 444 to WING token CH_1_EQ_ON will result in a setting to 1; Finally, sending integer value 444 to WING token CH_1_NAME will change the channel name to 444.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting the value of ival, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to set a value on a token of type NODE will return WNODE.
 
 
-# int wSetTokenString(wtoken token, char* str)
+## int wSetTokenString(wtoken token, char* str)
 The wSetTokenString()  function takes as input a WING token token and a string str. It sends to WING the value of str after it has been adapted to the format expected by the WING token it is sent to. 
 For example, sending string “444” to WING token CH_1_EQ_1F will be sent as a 32bit float value of 444.0; WING will the adjust it to the nearest valid value of 444.533997. Sending that same string “444” to WING token CH_1_EQ_ON will result in a setting to 1, Finally, sending string “444” to WING token CH_1_NAME will change the channel name to 444.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting the string str, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to set a value on a token of type NODE will return WNODE.
@@ -92,21 +92,21 @@ The function returns WSUCCESS if the requested operation was successful, other v
 
 # Getting Values
 
-# int wGetTokenFloat(wtoken token, float* fval)
+## int wGetTokenFloat(wtoken token, float* fval)
 The wGetTokenFloat()  function interrogates WING token token to get its currently associated value. This value has a given type, which can for example be byte, 16bits integer, 32bits integer or float, empty string, 64 or 256 chars max string. The value retrieved from WING is adapted to float format as expected by the fval variable.
 For example, inquiring WING token CH_1_EQ_1F will return the current value of the token as a float value in fval. Inquiring WING token CH_1_EQ_ON will result in a value of 0.0 or 1.0, depending on the state of the token. 
 On the other hand, inquiring WING token CH_1_NAME will return a value of 0.0 and a status of WZERO.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting token value to fval, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to get a value from a token of type NODE will return WNODE.
 
 
-# int wGetTokenInt(wtoken token, int* ival)
+## int wGetTokenInt(wtoken token, int* ival)
 The wGetTokenFloat()  function interrogates WING token token to get its currently associated value. This value has a given type, which can for example be byte, 16bits integer, 32bits integer or float, empty string, 64 or 256 chars max string. The value retrieved from WING is adapted to integer format as expected by the ival variable.
 For example, inquiring WING token CH_1_EQ_1F will return the current value of the token as an int value in ival. Inquiring WING token CH_1_EQ_ON will result in a value of 0 or 1, depending on the state of the token. 
 On the other hand, inquiring WING token CH_1_NAME will return a value of 0.0 and a status of WZERO.
 The function returns WSUCCESS if the requested operation was successful, other values can be returned, such as WZERO if no suitable format was found for adapting token value to ival, or WSEND_TCP_ERROR if an error took place while communicating with WING. Attempting to get a value from a token of type NODE will return WNODE.
 
 
-# int wGetTokenString(wtoken token, char* str)
+## int wGetTokenString(wtoken token, char* str)
 The wGetTokenFloat()  function interrogates WING token token to get its currently associated value. This value has a given type, which can for example be byte, 16bits integer, 32bits integer or float, empty string, 64 or 256 chars max string. The value retrieved from WING is adapted to string format as expected by the str variable.
 For example, inquiring WING token CH_1_EQ_1F will return the current value of the token as a string in str. Inquiring WING token CH_1_EQ_ON will result in a 1-character string of “0” or “1”, depending on the state of the token. Similarly, a token with a floating-point native format would result in a string containing the string representation of the floating-point value.
 As a last example, inquiring WING token CH_1_NAME will return the string currently used for naming channel 1.
@@ -119,7 +119,7 @@ So, when a “one shot read” request arrives and is served, it will sort throu
 Wapi therefore provides another set of Get functions for applications requiring a timed control over the data they exchange with WING. In this new set of functions, the Get instance will as for the non-timed versions gather information from WING over a given period of time and filter the possibly multiple  received tokens for one matching the specified token provided at call time. Only when the specified token is received or time has expired will the function process the data it received.
 
 
-# int wGetFloatTokenTimed(wtoken tokenval, float *fval, int timeout)
+## int wGetFloatTokenTimed(wtoken tokenval, float *fval, int timeout)
 The int wGetFloatTokenTimed() function is to some extend similar to the wGetFloatToken() function in the sense it aims at retrieving from WING data and adapt it to floating-point format before returning it to fval;
 But it will do so over a period of time timeout, expressed in µs (microseconds). 
 As long as timeout is not reached, the function is inquiring WING for data, if no data appears available, a value of WZERO is returned. 
@@ -131,7 +131,7 @@ If data is available from WING and the data token is not the expected one, the f
 
 
 
-# int wGetIntTokenTimed(wtoken tokenval, int *ival, int timeout)
+## int wGetIntTokenTimed(wtoken tokenval, int *ival, int timeout)
 The int wGetIntTokenTimed() function is to some extend similar to the wGetIntToken() function in the sense it aims at retrieving from WING data and adapt it to floating-point format before returning it to ival;
 But it will do so over a period of time timeout, expressed in µs (microseconds). 
 As long as timeout is not reached, the function is inquiring WING for data, if no data appears available, a value of WZERO is returned. 
@@ -143,7 +143,7 @@ If data is available from WING and the data token is not the expected one, the f
 
 
 
-# int wGetStringTokenTimed(wtoken tokenval, char* str, int timeout)
+## int wGetStringTokenTimed(wtoken tokenval, char* str, int timeout)
 The int wGetStringTokenTimed() function is to some extend similar to the wGetStringToken() function in the sense it aims at retrieving from WING data and format it as a string;
 But it will do so over a period of time timeout, expressed in µs (microseconds). 
 As long as timeout is not reached, the function is inquiring WING for data, if no data appears available, a value of WZERO is returned. 
@@ -209,23 +209,23 @@ We show on the right of the page the resulting channel strips 1-4:
 
 
  
-# Unsolicited updates
+# Event-based updates
 There are times and situations when WING will send data to your program. This has been explained above: As soon as you are connected to WING and have exchanged data with it, the connection will stay in an open state for 10s, unless to specifically establish and close the TCP connection around your work. While this will help, it will not prevent WING to send you data while the TCP link is active, and is certainly not an effective way to manage data as you will send more resources in opening/closing the connection than in time sending or receiving data.
 Wapi provides additional API functions to manage event driven applications. These are managed around the notion of ‘main loop’ as often found in IOT devices running Arduino devices, or in standard Linux or Windows applications where a main loop ensures the management of all events coming from the devices connected to your computer (mouse, keyboard, etc.). WING data can be treated just as any other event.
 API calls are therefore available to keep a connection between your application and WING alive, as well as to get data from WING, effectively emptying the event queue of the communication with the console. This will be assured with the wKeepAlive() and the wGetVoidPTokenTimed() function calls presented below.
 
-# int wKeepAlive()
+## int wKeepAlive()
 wKeepAlive() maintains the connection between WING and the calling program so data issued by the console with no request initiated by the program can be received in a main loop, or over an extended period of time beyond 10s. 
 In fact, this function can be called as often as you like and will optionally performs a small exchange with the console, based on an internal timer. The elapsed time between two effective exchanges of data with the console depend on the value of wKeepAlive_TIMEOUT which is part of the wapi.h file.
 The wKeepAlive() function returns WSUCCESS if a valid exchange took place to renew a 10 seconds working communication,  or WZERO if no exchange was necessary. The function can also return the values of WSEND_ERROR or WRECV_ERROR if communication was not successful.
 
 
-# int wGetVoidPToken(wtoken *token, void* vpt)()
+## int wGetVoidPToken(wtoken *token, void* vpt)()
 The wGetVoidPToken() API call is a specific Get function. Unlike other Get functions previously presented in this document, it does not expect data from a specific token, nor a specified format in which the data from the console should be converted to. The function will check the WING receive event queue for data and will only return when data is received by removing the oldest event available from the queue. If no valid data is found, a value of WZERO is returned. 
 When data is available in the event queue, the oldest even is retrieved, and its token is returned in the token variable. The data associated to the token is also returned to the calling application using the vpt variable. The function returns WSUCCESS if data has been returned to the calling program, WZERO if no suitable format conversion was found. It can also return WRECV_ERROR on TCP read errors. Attempting to get a value from a token of type NODE will return WNODE.
 
 
-# int wGetVoidPTokenTimed(wtoken *token, void* vpt, int timeout)()
+## int wGetVoidPTokenTimed(wtoken *token, void* vpt, int timeout)()
 The wGetVoidPTokenTimed() API call is a specific Get function. Unlike other Get functions previously presented in this document, it does not expect data from a specific token, nor a specified format in which the data from the console should be converted to. The function will check the WING receive event queue for event and remove the oldest event available from the queue. This check will last for a time specified by timeout, expressed in micro seconds. If no data is found over a period of time of value timeout, a value of WZERO is returned. 
 When data is available in the event queue, the oldest even is retrieved, and its token is returned in the token variable. The data associated to the token is also returned to the calling application using the vpt variable. The function returns WSUCCESS if data has been returned to the calling program, WZERO if no suitable format conversion was found or a timeout occurred. It can also return WRECV_ERROR on TCP read errors. Attempting to get a value from a token of type NODE will return WNODE.
 
@@ -274,20 +274,19 @@ As the set of values in a node list is fixed and of known type; it can be set an
 The presence of the line feed character is only there to help creating text files directly from node data, without any need for further formatting at the application level.
 The following functions list API entries to use WING nodes as defined above.
 
-# Nodes
 
-# int wSetNode(char* str)
+## int wSetNode(char* str)
 The wSetNode() function parses the string contained in str according to the format used in OSC nodes; For example, a string such as /ch.1.fdr 8.5,mute 1,/bus.1.fdr 5.0,.2.fdr=0.5 will set fader of channel 1 to the 8.5dB value and mute the channel. Bus 1 fader will be set to 5dB and bus 2 fader will be set to 0.5dB.  
 Each parameter group is separated by a ‘,’ character, the ‘/’ character represents the root of the JSON parameter tree, and ‘.’ characters are used to navigate up and down within the JSON parameter tree.  
 The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. 
 
 
-# int wGetNode(wtoken node, char* str) 
+## int wGetNode(wtoken node, char* str) 
 The wGetNode() function will return in str a string of values separated formatted an in the OSC node convention and corresponding to the node token node.  
 str must be large enough to accept the characters returned by the call. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line‐feed and a \0 byte. 
 
 
-# int wSetNodeFtomTVArray(wTV* TV, int nTV) 
+## int wSetNodeFtomTVArray(wTV* TV, int nTV) 
 The wSetNodeFromTVArray() function sends updates to WING  in a single network exchange from the nTV
 elements in wTV (see below) array TV; This is a great way to improve network performance. Although 
 the function is the symmetrical to wGetNodeToTVArray(), it can accept hierarchically organized 
@@ -296,7 +295,7 @@ The function returns WSUCCESS or an error if one takes place during allocating, 
 resulting network buffer to WING. 
 
 
-# int wGetNodeToTVArray (wtoken node, wTV* array) 
+## int wGetNodeToTVArray (wtoken node, wTV* array) 
 The wGetNodeToTVArray() function will return in TV, an array of structures wTV (see below), all values 
 respective of their corresponding token and part of the node token node.  
 array must be large enough to accept the data returned by the call (see below for the number of 
@@ -367,22 +366,22 @@ ink=0,pan=0.00,wid=100.00,.13.on=0,lvl=144.00,pon=0,ind=0,mode=PRE,plink=0,pan=0
 # Effects and Plugins
 WING comes with an impressive number of effects, plugins and emulations that can be used on any channel without costing any FX slots. In every channel, Gate, EQ Compressor can take different processing models you can organize and change on the fly. The following pages below present the different effects and their parameters.
 
-# Plugins
+## Plugins
 Plugins entries are directly included with channels, busses, etc. and can either default to WING standard algorithms or adapt to alternative plugins to color your sound or fit your taste when it comes to mixing. Plugins are showing under the main JSON structure, only when instantiated. WING Channel audio engines enable 4 sorts of plugins: Filter, Gate, EQ and Dynamics. Bus, Main and Matrix audio engines support EQ and Dynamics plugins.
 
 The choice of plugin is represented by the name (or model) of the plugin, as set under the respective “mdl” token; After a console reset, the default channel Filter, Gate, EQ and Dynamics plugins will be  “TILT”, “GATE”, “STD”,  and “COMP”, respectively, and these can be changed to one of the multiple plugins available within the console (respecting the category they apply to of course).
 The choice of plugin is represented by the name (or model) of the plugin, as set under the respective “mdl” token; authorized values are:
 
-# Filters:
+### Filters:
     TILT EQ, MAXER, AP 90, AP 180
 
-# Gates:
+### Gates:
     GATE/EXPANDER, DUCKER, EVEN 88 GATE, SOUL 9000 GATE, DRAW MORE 241, BDX902 DEESSER, WAVE DESIGNER, DYNAMIC EQ, SOUL WARMTH PRE, 76 LIMITER AMP, LA LEVELER, AUTO RIDER
 
-# Equalizers:
+### Equalizers:
     WING EQ, SOUL ANALOGUE, EVEN 88 FORMANT, EVEN 84, FORTISSIMO 110, PULSAR, MACH EQ4
 
-# Compressors:
+### Compressors:
     WING COMPRESSOR, WING EXPANDER, BDX 160 COMP, BDX 560 EASY, DRAW MORE COMP, EVEN COMP/LIM, SOUL 9000, SOUL BUS COMP, RED3 COMPRESSOR, 76 LIMITER AMP, LA LEVELER, FAIR KID, ETERNAL BLISS, NO-STRESSOR, WAVE DESIGNER, AUTO RIDER
 
 In order for a wapi program to gain access to plugin parameters, independently from the plugin being installed/loaded at a given slot, the plugin parameter names are being ‘anonymized’ to names p01…pnn, rather than the names that are listed with each single plugin. The actual parameter names for each separate plugin are listed in the plugin description tables later in this document and are preceded with their apparition number in the plugin parameter list; For example, to access the “range“ value of plugin “GATE“ used in channel 03, you would set the token value to CH_3_GATE_P02.
@@ -427,15 +426,15 @@ In the small program shown below, we replace the default Gate and Compressor plu
 
 
  
-# Effects
+## Effects
 Effects nodes are part of the main JSON structure, under the fx.n names, with n: [1…16] representing the 16 effects slots available for simultaneous use in the WIN audio processing. These 16 slots are divided in two sets of slots: 1-8 and slots 9-16 dedicated to premium effects and standard effects, respectively. As one can expect, premium effect slots can be running standard effects too.
 
 As in the case of plugins, the choice of effect is represented by the name (or model) of the effect, as set under the respective “mdl” token; authorized values are: 
 
-# Premium
+### Premium
     NONE, EXTERNAL, HALL REVERB, ROOM REVERB, CHAMBER REVERB, PLATE REVERB, CONCERT REVERB, AMBIENCE, VINTAGE ROOM, VINTAGE REVERB, VINTAGE PLATE, GATED REVERB, REVERSE REVERB, ELAY/REVERB, SHIMMER REVERB, SPRING REVERB, DIMENSION CRS, STEREO CHORUS, STEREO FLANGER, STEREO DELAY, ULTRATAP DELAY, TAPE DELAY, OILCAN DELAYB, BD DELAY, STEREO PITCH, DUAL PITCH, VSS3 REVERB, 
 
-# Standard
+### Standard
     NONE, EXTERNAL, GRAPHIC EQ, PIA 560 GEQ, DOUBLE VOCAL, PRECISION LIMITER, 2-BAND DEESSER, ULTRA ENHANCER, EXCITER, PSYCHO BASS, ROTARY SPEAKER, PHASER, TREMOLO/PANNER, TAPE MACHINE, MOOD FILTER, SUB OCTAVER, RACK AMP, UK ROCK AMP, ANGEL AMP, JAZZ CLEAN AMP, DELUXE AMP, SOUL ANALOGUE, EVEN 88 FORMANT, EVEN 84, FORTISSIMO 110, PULSAR, MACH EQ4
 
 Effects can be used as dedicated inserts at two defined location within the audio path: pre and post xxx.
@@ -541,11 +540,11 @@ Meter data is transmitted to a UDP port chosen by the user. When selecting which
 wapi offers a small set of function calls to help programmers manage meter data. it hides the networking complexity and proposes a simple way of selecting what meter to get back from the digital console. Meter data will be provided back to the application in the form of a buffer of values, decoding data being left to the application.
 
 
-# int wMeterUDPPort (int wport)
+## int wMeterUDPPort (int wport)
 The wMeterUDPPort() API call enable users to select the UDP port WING will send meter data to. It also prepares the wapi internal network for receiving meter data and being able to return data to the user application. wport is a standard UDP port and must be available for receiving data. The function returns WSUCCESS if everything is set correctly or will return an error value if the request was not successful.
 
 
-# int wSetMetersRequest(int reqID, unsigned char *wMid)
+## int wSetMetersRequest(int reqID, unsigned char *wMid)
 wSetMetersRequest() must be called in order to start receiving meter data. The API associates a request ID reqID to a selection of meters to receive. The request ID helps renewing the request for data and sorting through potentially multiple data sets sent by the console. The wMid parameter holds the selection of meters that can be recovered from WING in an array of 19 bytes. Each bit (from left to right) of the array bytes represents a meter family that can be received from the console, and is shown in the table below:
 
     byte index  bits    selection
@@ -568,11 +567,11 @@ For example, a C source language array declaration as follows will request meter
 
 
 
-# int wRenewMeters(int reqID)
+## int wRenewMeters(int reqID)
 The wRenewMeters()  API call is used to renew a previous request for meter data; This function should be called every 5 seconds maximum in order to avoid losing meter data if continuous receiving is expected. The reqID parameter must be previously defined with a call to wSetMetersRequest(). The function returns WSUCCESS if the request is accepted, or will return other error status values otherwise.
 
 
-# int wGetMeters(unsigned char *buf, int maxlen, int timeout)
+## int wGetMeters(unsigned char *buf, int maxlen, int timeout)
 wGetMeters() will check if meter data has been received or is available. The call can be blocking or un-blocking depending on the value of timeout. A timeout of 0 will block the application in reading mode until data is available. A non-zero value of timeout, expressed in micro-seconds will return after the provided value and return to the caller with a value of WZERO (0) if no data is available or will return sooner with the actual number of bytes read available in buf. 
 The maxlen parameter indicates the maximum number of bytes buf can hold. It is the responsibility of the application to ensure buf is large enough to accept maxlen bytes.
 The data returned by the wGetMeters() function is coded as follows:
