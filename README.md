@@ -160,12 +160,12 @@ Each parameter group is separated by a ‘,’ character, the ‘/’ character 
 The function returns a status WSUCCESS if the string was processed with no errors; It will return WNODE if a token or value provided with the string str is not valid. The function can also report other errors if communication issues were detected. str must be \0 ended. 
 
 
-# int wGetNode(wtoken node, char *str) 
+# int wGetNode(wtoken node, char* str) 
 The wGetNode() function will return in str a string of values separated formatted an in the OSC node convention and corresponding to the node token node.  
 str must be large enough to accept the characters returned by the call. The function returns a status WSUCCESS if the node was processed with no errors; It will return WZERO if the token provided is not a valid node. The function can also report other errors if communication issues were detected. The line of text returned by the function end with a line‐feed and a \0 byte. 
 
 
-# int wSetNodeFtomTVArray(wTV *TV, int nTV) 
+# int wSetNodeFtomTVArray(wTV* TV, int nTV) 
 The wSetNodeFromTVArray() function sends updates to WING  in a single network exchange from the nTV
 elements in wTV (see below) array TV; This is a great way to improve network performance. Although 
 the function is the symmetrical to wGetNodeToTVArray(), it can accept hierarchically organized 
@@ -174,7 +174,7 @@ The function returns WSUCCESS or an error if one takes place during allocating, 
 resulting network buffer to WING. 
 
 
-# int wGetNodeToTVArray (wtoken node, wTV *array) 
+# int wGetNodeToTVArray (wtoken node, wTV* array) 
 The wGetNodeToTVArray() function will return in TV, an array of structures wTV (see below), all values 
 respective of their corresponding token and part of the node token node.  
 array must be large enough to accept the data returned by the call (see below for the number of 
@@ -183,6 +183,7 @@ processed with no errors; It will return WTOKEN if the token provided is not a v
 error occurs during parsing the data received from the console. The function can also report other 
 errors if communication issues were detected.  
 wTV is a C structure defined in the wapi.h file as follows: 
+`
 typedef struct {
     wtoken    token;
     wtype     type;
@@ -192,12 +193,12 @@ typedef struct {
         char*  sdata;
     } d;
 } wTV;
-©Patrick‐Gilles Maillot  82  WING – V 0.44 
+
 The filling of the structure is obvious for int and float data; string data sets are dynamically 
 allocated and the pointer of the allocated string is saved in sdata; if the string returned from 
 the console is an empty string, no memory allocation takes place and a NULL pointer is set in 
 sdata.
-
+`
 
 # A Small Program Example
 Let’s program! Assume you need to programmatically change the name of channels and mute/unmute the respective channels from data contained in a file. Let’s consider the file also contains initial channel faders, and covers channels 1 to 4. The file can be a text file such as:
