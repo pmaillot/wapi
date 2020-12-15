@@ -16,6 +16,8 @@ extern int wMeterUDPPort(int wport);
 
 extern wtype wGetType(wtoken token);
 extern char* wGetName(wtoken token);
+extern int wGetToken(wtoken tokenval, wtype *type, wvalue *value);
+extern int wGetTokenTimed(wtoken tokenval, wtype *type, wvalue *value, int timeout);
 extern int wGetFloatToken(wtoken tokenval, float *fval);
 extern int wGetIntToken(wtoken tokenval, int *ival);
 extern int wGetStringToken(wtoken tokenval, char* str);
