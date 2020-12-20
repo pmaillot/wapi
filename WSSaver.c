@@ -33,14 +33,14 @@
 //
 char  		wingip[24] = "";
 int			keep_running = 1;
-int			WSSaverTimer = 10;	// Timer value, override with -t option
+int			WSSaverTimer = 20;	// Timer value, override with -t option
 //
 time_t  	WingRemNow;			// 'now' time value (seconds)
 time_t 		WingSsavTmr;		// Saver time value (seconds)
 //
 int main(int argc, char **argv) {
-	wtoken	mytoken;
-	int		mvalue, i;
+	int		i;
+	wTV		tv;
 	int		WingSSaveOn = 0;
 	int		WingLoValues[11];
 	int		WingHiValues[11];
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 			$CTL_CFG_LIGHTS_LAMP
 	};
 	//
-	printf ("WSSaver - WING Screen Saver - ©2020 - Patrick-Gilles Maillot\n");
+	printf ("WSSaver - WING Screen Saver - (c)2020 - Patrick-Gilles Maillot\n");
 	fflush(stdout);
 	while ((i = getopt(argc, argv, "i:t:h")) != -1) {
 		switch ((char)i) {
@@ -98,9 +98,9 @@ int main(int argc, char **argv) {
 		// Get current time
 		WingRemNow = time(NULL);
 		// React to WING events with a 5ms timeout
-		if (wGetVoidPTokenTimed(&mytoken, &mvalue, 5000) == WSUCCESS) {
+		if (wGetVoidPTokenTimed(&tv, 5000) == WSUCCESS) {
 			// Filter for lights related messages
-			if ((mytoken < $CTL_CFG_LIGHTS_BTNS) || (mytoken > $CTL_CFG_LIGHTS_LAMP)) {
+			if ((tv.token < $CTL_CFG_LIGHTS_BTNS) || (tv.token > $CTL_CFG_LIGHTS_LAMP)) {
 				if (WingSSaveOn) {
 					// Exit screen saver mode
 					for (i = 0; i < 11; i++) wSetTokenInt(WingLTokens[i], WingHiValues[i]);
@@ -110,9 +110,9 @@ int main(int argc, char **argv) {
 				WingSsavTmr = WingRemNow + WSSaverTimer;
 			} else {
 				// Get new low lights values
-				if (WingSSaveOn) WingLoValues[mytoken - $CTL_CFG_LIGHTS_BTNS] = mvalue;
+				if (WingSSaveOn) WingLoValues[tv.token - $CTL_CFG_LIGHTS_BTNS] = tv.d.idata;
 				// Get new high lights values
-				else WingHiValues[mytoken - $CTL_CFG_LIGHTS_BTNS] = mvalue;
+				else WingHiValues[tv.token - $CTL_CFG_LIGHTS_BTNS] = tv.d.idata;
 			}
 		} else {
 			// No WING data
