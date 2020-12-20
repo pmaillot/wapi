@@ -23,8 +23,8 @@ typedef unsigned short boolean;
 #define NSTEPS		20
 
 int main() {
-	wtoken			mytoken;
-	int				mvalue, i;
+	wTV				tv;
+	int				i;
 	float			fvalue, dvalue, rvalue;
 	char  			wingip[24] = "";
 	//
@@ -39,10 +39,10 @@ int main() {
 			fflush(stdout);
 		}
 		// act on mute request on ch 1 with a 5ms timeout
-		if (wGetVoidPTokenTimed(&mytoken, &mvalue, 5000) == WSUCCESS) {
-			if (mytoken == CH_1_MUTE) {
+		if (wGetVoidPTokenTimed(&tv, 5000) == WSUCCESS) {
+			if (tv.token == CH_1_MUTE) {
 				// mute is 0 or 1
-				if (mvalue == 1) {
+				if (tv.d.idata == 1) {
 					// immediately unset mute
 					wSetTokenInt(CH_1_MUTE, 0);
 					// lower fader in 20 steps over 1 second
