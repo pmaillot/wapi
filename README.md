@@ -1,5 +1,5 @@
 # wapi
-Current version: 1.13
+Current version: 1.14
 
 A C language API for WING Digital Mixing Consoles
 
