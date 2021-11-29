@@ -39,6 +39,8 @@ extern int wSetNode(char *str);
 extern int wSetNodeFromTVArray(wTV *array, int nTV);
 extern int wGetNode(wtoken node, char *str);
 extern int wGetNodeToTVArray(wtoken node, wTV *array);
+extern int wGetBinaryNode(wtoken node, unsigned char *rbuf);
+extern int wSetBinaryNode(unsigned char *rbuf, int len);
 //
 extern int wRenewMeters(int reqID);
 extern int wSetMetersRequest(int reqID, unsigned char *wMid);
