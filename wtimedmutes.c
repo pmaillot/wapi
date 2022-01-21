@@ -11,6 +11,7 @@
  *      v 2.0: added threads to enable each mute to take place independently from others
  *             added parameters to control level change slope (dB, time, accel)
  *      v 3.0  added Windows GUI (March 6, 2021)
+ *      v 3.1  corrected possible memory leak
  */
 //
 #include <unistd.h>
@@ -173,7 +174,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		hfont = CreateFont(16, 0, 0, 0, FW_REGULAR, 0, 0, 0, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS,
 			CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, VARIABLE_PITCH, TEXT("Arial"));
 		htmp = (HFONT) SelectObject(hdc, hfont);
-		TextOut(hdc, 135, 3, str1, wsprintf(str1, "wtimedmutes - ver 3.0 - ©2021 - P-G Maillot"));
+		TextOut(hdc, 135, 3, str1, wsprintf(str1, "wtimedmutes - ver 3.1 - ©2021 - P-G Maillot"));
 		TextOut(hdc, 135, 26, str1, wsprintf(str1, "WING IP Address:"));
 		TextOut(hdc, 150, 47, str1, wsprintf(str1, "dB:"));
 		TextOut(hdc, 260, 47, str1, wsprintf(str1, "Time (ms):"));
@@ -341,7 +342,7 @@ int main(int argc, char **argv) {
 //		exit(1);
 	} else {
 		printf("WING found at IP: %s\n", wingip);
-		printf("Using wapi version %i.%i\n\n", wVer()/256, wVer());
+		printf("Using wapi version %i.%i\n\n", wVer()/256, wVer()&255);
 		wconnected = 1;
 	}
 	//
@@ -358,6 +359,9 @@ int main(int argc, char **argv) {
 		prinft("GUI mode not supported outside of Windows\n");
 #endif
 		return 0;
+	} else {
+		printf("wtimedmutes - ver 3.1 - (c)2021 - P-G Maillot\n");
+		fflush(stdout);
 	}
 	//
 	wmainloop();
@@ -411,6 +415,8 @@ int wmainloop() {
 							}
 						}
 					}
+					// Avoid memory leaks
+					if (tv[l].type == S32) free(tv[l].d.sdata);
 				}
 			}
 		} else {
