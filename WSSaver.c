@@ -19,6 +19,8 @@
  *
  * See the '-h'option for a list of options
  *
+ * ver 0.2: corrected possible memory leak
+ *
  */
 //
 #include <stdio.h>
@@ -39,8 +41,8 @@ time_t  	WingRemNow;			// 'now' time value (seconds)
 time_t 		WingSsavTmr;		// Saver time value (seconds)
 //
 int main(int argc, char **argv) {
-	int		i;
-	wTV		tv;
+	int		i, e, l;
+	wTV		tv[128];
 	int		WingSSaveOn = 0;
 	int		WingLoValues[11];
 	int		WingHiValues[11];
@@ -58,7 +60,7 @@ int main(int argc, char **argv) {
 			$CTL_CFG_LIGHTS_LAMP
 	};
 	//
-	printf ("WSSaver - WING Screen Saver - (c)2020 - Patrick-Gilles Maillot\n");
+	printf ("WSSaver - WING Screen Saver - v 0.2- (c)2021 - Patrick-Gilles Maillot\n");
 	fflush(stdout);
 	while ((i = getopt(argc, argv, "i:t:h")) != -1) {
 		switch ((char)i) {
@@ -86,7 +88,7 @@ int main(int argc, char **argv) {
 	//
 	// Initial High and Low values
 	for (i = 0; i < 11; i++ ) {
-		wGetIntToken(WingLTokens[i], &WingHiValues[i]);
+		wGetTokenInt(WingLTokens[i], &WingHiValues[i]);
 		WingLoValues[i] = 0;
 	}
 	//
@@ -97,22 +99,28 @@ int main(int argc, char **argv) {
 		}
 		// Get current time
 		WingRemNow = time(NULL);
-		// React to WING events with a 5ms timeout
-		if (wGetVoidPTokenTimed(&tv, 5000) == WSUCCESS) {
-			// Filter for lights related messages
-			if ((tv.token < $CTL_CFG_LIGHTS_BTNS) || (tv.token > $CTL_CFG_LIGHTS_LAMP)) {
-				if (WingSSaveOn) {
-					// Exit screen saver mode
-					for (i = 0; i < 11; i++) wSetTokenInt(WingLTokens[i], WingHiValues[i]);
-					WingSSaveOn = 0;		// Screen saver OFF
-					printf ("screensaver OFF\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"); fflush(stdout);
+		// React to WING events with a 500us timeout
+		if ((e = wGetParsedEventsTimed(tv, 500)) > 0) {
+			for (l = 0; l < e; l++) {
+				if (tv[l].token != $SYSCFG_CONSOLENAME) {
+					// Filter for lights related messages
+					if ((tv[l].token < $CTL_CFG_LIGHTS_BTNS) || (tv[l].token > $CTL_CFG_LIGHTS_LAMP)) {
+						if (WingSSaveOn) {
+							// Exit screen saver mode
+							for (i = 0; i < 11; i++) wSetTokenInt(WingLTokens[i], WingHiValues[i]);
+							WingSSaveOn = 0;		// Screen saver OFF
+							printf ("screensaver OFF\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b"); fflush(stdout);
+						}
+						WingSsavTmr = WingRemNow + WSSaverTimer;
+					} else {
+						// Get new low lights values
+						if (WingSSaveOn) WingLoValues[tv[l].token - $CTL_CFG_LIGHTS_BTNS] = tv[l].d.idata;
+						// Get new high lights values
+						else WingHiValues[tv[l].token - $CTL_CFG_LIGHTS_BTNS] = tv[l].d.idata;
+					}
 				}
-				WingSsavTmr = WingRemNow + WSSaverTimer;
-			} else {
-				// Get new low lights values
-				if (WingSSaveOn) WingLoValues[tv.token - $CTL_CFG_LIGHTS_BTNS] = tv.d.idata;
-				// Get new high lights values
-				else WingHiValues[tv.token - $CTL_CFG_LIGHTS_BTNS] = tv.d.idata;
+				// Avoid memory leaks
+				if (tv[l].type == S32) free(tv[l].d.sdata);
 			}
 		} else {
 			// No WING data
