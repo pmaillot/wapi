@@ -50,7 +50,7 @@ Someone mentioned that the `-mwindows` option might be needed in the link line a
 WING parameters can be set (or modified) using the wSetxxx API family of calls; Similarly, the parameters can be retrieved from WING using the wGetxxx API family of calls. 
 
 
-Full documentation on wapi is available as a pdf file at https://sites.google.com/site/patrickmaillot/wing
+Full documentation on wapi is available as a pdf file at https://sites.google.com/site/patrickmaillot/wing. The site also proposes several applications developed using wapi, or applications using OSC. Commercial applications (OSC or wapi based) areavailable at https://x32ram.com.
 
 
 
