@@ -23,7 +23,7 @@ int main() {
 	char*			Ntoken = 0;			// pointer to token name
 	unsigned int	Otoken = 0;			// token previous value
 	int				events;				// number of events (or error code)
-	wTV				TV[512];			// we should get less than 512 events every 100us
+	wTV				TV[1024];			// we should get less than 1024 events every 100us
 
 	printf("Using wapi ver: %i.%i\n", wVer() >> 8, wVer() & 0xFF);
 	if ((events = wOpen(wingip)) != WSUCCESS) return(-1);
@@ -33,8 +33,8 @@ int main() {
 		wKeepAlive();
 		//
 		if ((events = wGetParsedEventsTimed(TV, 500)) > 0) {
-			if (events > 480) {
-				printf("events= %d\n", events);
+			if (events > 960) {
+				printf("possible event overflow at %d events in 500us\n", events);
 				fflush (stdout);
 			}
 			for (int i = 0; i < events; i++) {
