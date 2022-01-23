@@ -7,34 +7,60 @@
  *      A small utility (command line) to capture all
  *      WING events; refresh rate is 500us
  *      Use Ctrl-C to quit
+ *
+ *      ver 1.0: Added variable timeout value, and a 1k events buffer to match the 10kB
+ *               buffer of wapi starting v 1.19
  */
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 //
 #include "../wapi/wapi.h"
 #include "../wapi/wext.h"
 //
 // Wait for WING data (forever)
 //
-int main() {
+int main(int argc, char **argv) {
 	char  			wingip[24] = "";	// storage for WING IP address
 	char*			Ntoken = 0;			// pointer to token name
 	unsigned int	Otoken = 0;			// token previous value
 	int				events;				// number of events (or error code)
-	wTV				TV[1024];			// we should get less than 1024 events every 100us
+	wTV				TV[1024];			// we should get less than 1024 events every [timeout]us
+	int 			timeout = 500;		// default timeout value in us
 
+	printf("wevents -v 1.0- (c)2022 - Patrick-Gilles Maillot\n");
 	printf("Using wapi ver: %i.%i\n", wVer() >> 8, wVer() & 0xFF);
 	if ((events = wOpen(wingip)) != WSUCCESS) return(-1);
 	printf("WING found at IP: %s\n", wingip);
 
+	while ((events = getopt(argc, argv, "t:h")) != -1) {
+		switch ((char)events) {
+		case 't':
+			sscanf(optarg, "%d", &timeout);
+			break;
+		default:
+		case 'h':
+			printf("\nusage: wevents [-t <timeout>]\n\n");
+			printf("wevents captures WING events and displays them along with their\n");
+			printf("respective data. The event buffer capacity is set to 1K events \n");
+			printf("every 500us by default. That can be changed using the -t <timeout>\n");
+			printf("option\n");
+			printf("If you get \"possible event overflow\" messages, try lowering the\n");
+			printf("value of <timeout>\n");
+			printf("Use <ctrl>-C to exit\n\n");
+			exit(0);
+			break;
+		}
+	}
+	//
 	while (1) {
 		wKeepAlive();
 		//
-		if ((events = wGetParsedEventsTimed(TV, 500)) > 0) {
+		if ((events = wGetParsedEventsTimed(TV, timeout)) > 0) {
 			if (events > 960) {
-				printf("possible event overflow at %d events in 500us\n", events);
+				printf("possible event overflow at %d events in %dus\n", events, timeout);
 				fflush (stdout);
 			}
 			for (int i = 0; i < events; i++) {
