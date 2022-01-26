@@ -7,7 +7,7 @@ A C language API for Behringer's WING Digital Mixing Consoles
 ![WING personal digital mixing console](https://sites.google.com/site/patrickmaillot/home/wing/Wing%20Default.snap.png?attredirects=0)
 
 This repo is a C code API to WING digital mixing consoles. Ver 0.01 (first release) was capable of get and set *all* WING parameters according to FW 1.06.
-This represents more than 28000 parameters! WING FW evolves, so does wapi.
+This represents approx. 29500 parameters! WING FW evolves, so does wapi.
 
 The API uses UDP and TCP networking to establish a connection to the WING console. Typical communication take place over TCP/IP on port 2222.
 
