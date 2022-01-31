@@ -58,6 +58,7 @@ typedef enum {
 
 // enum type for errors reported by wapi
 typedef enum {
+	WRECV_BUF_ERROR		=-10,		// would overflow receive buffer
 	WMEMORY				=-9,		// typical of a malloc issue
 	WBIND_UDP_ERROR		=-8,		// bind UDP error
 	WSEND_NTW_ERROR		=-7,		// general network send error
