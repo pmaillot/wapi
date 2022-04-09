@@ -4,7 +4,7 @@ Current version: 1.28
 A C language API for Behringer's WING Digital Mixing Consoles
 
 
-![WING personal digital mixing console](https://sites.google.com/site/patrickmaillot/home/wing/Wing%20Default.snap.png?attredirects=0)
+![WING personal digital mixing console](https://drive.google.com/file/d/1v-nBuxoyiyXmtLoDCjbRqzyPD-Sh8SPK/view?attredirects=0)
 
 This repo is a C code API to WING digital mixing consoles. Ver 0.01 (first release) was capable of get and set *all* WING parameters according to FW 1.06.
 This represents approx. 29500 parameters! WING FW evolves, so does wapi.
