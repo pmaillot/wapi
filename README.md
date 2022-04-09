@@ -6,7 +6,9 @@ A C language API for Behringer's WING Digital Mixing Consoles
 
 ![WING personal digital mixing console](https://mediadl.musictribe.com/media/PLM/data/images/products/P0BV2/2000Wx2000H/Image_BE_P0BV2_WING_Top_XL.png)
 
-This repo is a C code API to WING digital mixing consoles. Ver 0.01 (first release) was capable of get and set *all* WING parameters according to FW 1.06.
+This repo is a C code API to WING digital mixing consoles. 
+
+Ver 0.01 (first release) was capable of get and set *all* WING parameters according to FW 1.06.
 This represents approx. 29500 parameters! WING FW evolves, so does wapi.
 
 The API uses UDP and TCP networking to establish a connection to the WING console. Typical communication take place over TCP/IP on port 2222.
@@ -28,7 +30,7 @@ A typical program accessing WING starts with an ‘open’ function and ends wit
 
 Programs communicate with WING over network. The API call wOpen() is used to establish communication link between WING and the application. 
 
-WING supports multiple formats, including integers, floats, and strings types. The API will try to ensure conversions as best as possible in order to match the requested format either by WING or by the API command. For example, if you request float data from a WING token which is an integer, the API will convert the integer to float before returning the data. Similarly, if you set a WING token of type string by sending it a float value, the float data will be changed to string before being sent to WING.
+WING supports multiple formats, including integers, floats, and strings types. The API will ensure conversions as best as possible in order to match the requested format either by WING or by the API command. For example, if you request float data from a WING token which is an integer, the API will convert the integer to float before returning the data. Similarly, if you set a WING token of type string by sending it a float value, the float data will be changed to string before being sent to WING.
 
 All WING tokens are identified by their name, based on the JSON structure that represents WING’s hierarchical data tree we already presented in this document.
 For example the identifier for channel 1 parametric equalizer, setting frequency 2 control, a.k.a “ch.1.peq.2f” in the JSON tree is known as token CH_1_PEQ_2F. The respective data in WING is a float and as written above, it can be modified from an integer, a float or even a string value, and can be returned to the application as an integer, a float of even a string.
