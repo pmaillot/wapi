@@ -31,7 +31,7 @@ typedef union {
 	char*			sval;	// pointer to string
 } wvalue;
 //
-typedef unsigned int hash;
+typedef unsigned int whash;
 //
 // An enum type to help with the index position of bits used for
 // designating meter data to retrieve (by group of 8), covering a total of 19
@@ -60,6 +60,7 @@ typedef enum {
 
 // enum type for errors reported by wapi
 typedef enum {
+	WHASH				=-13,		// unknown hash data
 	WNODEPARAM			=-12,		// error in parsing node parameter
 	WNODEVALUE			=-11,		// error in parsing node value
 	WRECV_BUF_ERROR		=-10,		// would overflow receive buffer
