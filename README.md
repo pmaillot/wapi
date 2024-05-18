@@ -50,7 +50,7 @@ Don’t forget to set the correct path to the wapi.lib file in the above compila
 WING parameters can be set (or modified) using the wSetxxx API family of calls; Similarly, the parameters can be retrieved from WING using the wGetxxx API family of calls. 
 
 
-Full documentation on wapi is available as a pdf file at https://sites.google.com/site/patrickmaillot/wing. The site also proposes several applications developed using wapi, or applications using OSC. Commercial applications (OSC or wapi based) are available at https://x32ram.com.
+Full documentation on wapi is available as a pdf file at [https://sites.google.com/site/patrickmaillot/wing](https://drive.google.com/file/d/1-iptgd2Uxw4qPEbmegG2Sqccf8AbRRfk/view). The site also proposes several applications developed using wapi, or applications using OSC. Commercial applications (OSC or wapi based) are available at https://x32ram.com.
 
 
 
