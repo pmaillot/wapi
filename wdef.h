@@ -52,5 +52,4 @@ typedef struct RCommand {
 } RCommand;
 
 
-
 #endif /* WDEF_H_ */
