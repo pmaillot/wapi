@@ -49,5 +49,4 @@ extern int wRenewMeters(int reqID);
 extern int wSetMetersRequest(int reqID, unsigned char *wMid);
 extern int wGetMeters(unsigned char *buf, int maxlen, int timeout);
 //
-
 #endif /* WEXT_H_ */
