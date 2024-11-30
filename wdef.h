@@ -50,6 +50,4 @@ typedef struct RCommand {
 	whash			h;			// - wingmap hash
 	wtoken			t;			// - WING token
 } RCommand;
-
-
 #endif /* WDEF_H_ */
