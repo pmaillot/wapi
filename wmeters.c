@@ -36,7 +36,7 @@ int				len;
 time_t			before = 0;			// Timers
 time_t			now;
 
-unsigned char	mbits[19] = {0x80, 0, 0, 0, 0x01}; // channel 1 &
+unsigned char	mbits[29] = {0x80, 0, 0, 0, 0x01}; // channel 1 &
                                                    // channel 40
 
 
