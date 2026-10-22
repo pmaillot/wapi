@@ -1,10 +1,9 @@
 # wapi
-Current version: 3.1.0-2
+Current version: 3.1.2-a
 
 A C language API and libraries for Behringer's WING Digital Mixing Consoles on WIndows, MacOS and Linux computing platforms
 
-
-![WING personal digital mixing console](https://cdn.mediavalet.com/aunsw/musictribe/p-G-pWYiAECAI-noL4prBg/aSmpc5_r90Woq0oG_1hUOQ/Original/Image_BE_0603-AEN_WING_Top_XL.png)
+[https://www.behringer.com/en/wing]
 
 Following the remarks from a Github user, this repository no longer contains the wapi library for not strictly complying to GPL licensing, and it became easier for me to just move it to another website.
 
