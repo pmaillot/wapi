@@ -1,5 +1,5 @@
 # wapi
-Current version: 3.1.2-a
+Current version: 3.1.3
 
 A C language API and libraries for Behringer's WING Digital Mixing Consoles on WIndows, MacOS and Linux computing platforms
 
